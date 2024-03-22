@@ -1,0 +1,127 @@
+import re
+from typing import TextIO, Any
+
+from sgf_parser.models.method import Method, MethodData
+from sgf_parser import models
+from sgf_parser.models import ParseState
+
+# Fields are generally separated by "," and contain a single "="
+# separating the key from the value. However, some fields have values
+# containing ",", with no quoting. To handle this, we require the key
+# to contain only a-z and A-Z. In addition, the Geotech AB extension,
+# have date fields (key "%") with no "=" separating the key from the
+# value...
+_RE_FIELD_SEP = re.compile(r",(?:(?=[a-zA-Z])|(?=%))")
+
+
+class Parser:
+    """
+    A class to parse an SGF file
+    """
+
+    method_code_class_mapping = {
+        "7": models.MethodCPT,
+        "07": models.MethodCPT,
+        "107A": models.MethodCPT,
+        "107B": models.MethodCPT,
+        "23": models.MethodRP,
+        "24": models.MethodTOT,
+        # "12": models.MethodSRS,
+        # "41": models.MethodSRS,
+        # "42": models.MethodSRS,
+        # "73": models.MethodSRS,
+        # "13": models.MethodSVT,
+    }
+
+    def parse(self, file: TextIO) -> list[Method]:
+        """
+        Parse the SGF file
+
+        The file parameter must be an opened file in text mode (with correct character encoding), pointing at the start
+        of the file to parse. The file pointer may not point at the end of the file when this method returns.
+        """
+
+        blocks = {
+            "£": ParseState.METHOD,
+            "$": ParseState.HEADER,
+            "#": ParseState.DATA,
+            "€": ParseState.METHOD,
+            "#$": ParseState.QUIT,
+        }
+        methods: list[Method] = []
+        method: Method | None = None
+        header: dict[str, Any] = {}
+
+        state = None
+        for row in file:
+            row = row.rstrip()
+            if not row:
+                continue
+
+            # Possible state changes
+            if row in blocks:
+                _new_state = blocks[row]
+                _old_state = state
+                if _new_state == ParseState.DATA and state in (ParseState.HEADER, ParseState.METHOD):
+                    # Starting a new data block, so store the current collected header in a new method
+                    method = self.parse_header(header)
+                    header = {}
+                elif _new_state in (ParseState.HEADER, ParseState.METHOD) and _old_state == ParseState.DATA:
+                    # Finished populating current method, since new method is starting
+                    # Store the current method, and empty the current method
+                    if method:
+                        methods.append(method)
+                    else:
+                        raise Exception("Method is None, that is unexpected")
+                    method = None
+                state = _new_state
+                continue
+
+            match state:
+                case ParseState.HEADER | ParseState.METHOD:
+                    header |= self._convert_str_to_dict(row)
+                case ParseState.DATA:
+                    method.method_data.append(self.parse_data(method, row))
+                case ParseState.QUIT:
+                    break
+                case None:
+                    raise ValueError("First block is not a main block")
+
+        if method:
+            method.post_processing()
+            methods.append(method)
+
+        return methods
+
+    @staticmethod
+    def _convert_str_to_dict(line: str) -> dict[str, Any]:
+        """
+        Convert row to dict. If repeated keys, then append values with ", " (comma and a space) as a separator
+        """
+        line = line.rstrip(",")
+        result = {}
+        for k, v in (i.split("=", 1) if "=" in i else [i[0], i[1:]] for i in re.split(_RE_FIELD_SEP, line) if i):
+            if not v:
+                continue
+            if k in result:
+                result[k] += f", {v}"
+            else:
+                result[k] = v
+        return result
+
+    def parse_header(self, header: dict[str, Any]) -> Method:
+        """
+        When finished collecting the header dict, then create the Method object
+        """
+        if "HM" not in header:
+            raise ValueError("Header does not contain a HM field")
+
+        if header["HM"] not in self.method_code_class_mapping:
+            raise ValueError(f"Unsupported value in the HM field {header['HM']!r}")
+
+        return self.method_code_class_mapping[header["HM"]].model_validate(header)
+
+    def parse_data(self, method: Method, row: str) -> MethodData:
+        row_dict = self._convert_str_to_dict(row)
+        method_data = method.method_data_type.model_validate(row_dict)
+        return method_data
