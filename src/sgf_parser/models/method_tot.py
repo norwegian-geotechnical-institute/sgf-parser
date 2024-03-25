@@ -76,6 +76,8 @@ class MethodTOT(Method):
     Method TOT
     """
 
+    name: str = "TOT"
+
     method_type: Literal[MethodType.TOT] = MethodType.TOT
     method_data_type: type[MethodTOTData] = MethodTOTData
     method_data: list[MethodTOTData] = []

@@ -46,6 +46,7 @@ class MethodCPT(Method):
     Method CPT
     """
 
+    name: str = "CPT"
     method_type: Literal[MethodType.CPT] = MethodType.CPT
     method_data_type: type[MethodCPTData] = MethodCPTData
 
