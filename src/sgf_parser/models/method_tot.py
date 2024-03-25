@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, computed_field
 
 from sgf_parser.models import MethodType, Method, MethodData, StopCode
 from sgf_parser.models.types import CommentCode
@@ -79,6 +79,7 @@ class MethodTOT(Method):
     method_data_type: type[MethodTOTData] = MethodTOTData
     method_data: list[MethodTOTData] = []
 
+    @computed_field
     @property
     def depth_top(self) -> float | None:
         if not self.method_data:
@@ -86,6 +87,7 @@ class MethodTOT(Method):
 
         return min(method_data.depth for method_data in self.method_data)
 
+    @computed_field
     @property
     def depth_base(self) -> float | None:
         if not self.method_data:
@@ -93,6 +95,7 @@ class MethodTOT(Method):
 
         return max(method_data.depth for method_data in self.method_data)
 
+    @computed_field
     @property
     def stopcode(self) -> int | None:
         if not self.method_data:
@@ -100,6 +103,7 @@ class MethodTOT(Method):
 
         return self.method_data[-1].comment_code
 
+    @computed_field
     @property
     def depth_in_rock(self) -> float | None:
         _rock_top_depth = None
@@ -133,6 +137,7 @@ class MethodTOT(Method):
 
         return depth_in_rock
 
+    @computed_field
     @property
     def depth_in_soil(self) -> float | None:
         _depth_in_soil = None
@@ -157,6 +162,7 @@ class MethodTOT(Method):
 
         return _depth_in_soil
 
+    @computed_field
     @property
     def bedrock_elevation(self) -> float | None:
         if self.depth_in_soil is None:

@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field, AliasChoices
+from pydantic import Field, AliasChoices, computed_field
 
 from sgf_parser.models import MethodType, MethodData, Method
 from sgf_parser.models.types import ApplicationClass
@@ -240,6 +240,7 @@ class MethodCPT(Method):
         else:
             return ApplicationClass.UNKNOWN
 
+    @computed_field
     @property
     def depth_top(self) -> float | None:
         if not self.method_data:
@@ -247,6 +248,7 @@ class MethodCPT(Method):
 
         return min(method_data.depth for method_data in self.method_data)
 
+    @computed_field
     @property
     def depth_base(self) -> float | None:
         if not self.method_data:
@@ -254,6 +256,7 @@ class MethodCPT(Method):
 
         return max(method_data.depth for method_data in self.method_data)
 
+    @computed_field
     @property
     def stopcode(self) -> int | None:
         if not self.method_data:

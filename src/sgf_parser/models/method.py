@@ -108,7 +108,7 @@ class Method(BaseModel, abc.ABC):
     serial_number: str | None = Field(None, alias="HC")
 
     # "HO": "predrilling_depth",
-    predrilling_depth: float | None = Field(None, alias="HO")
+    predrilling_depth: float = Field(0, alias="HO")
 
     # "HQ": "conducted_by",
     conducted_by: str | None = Field(None, alias="HQ")
