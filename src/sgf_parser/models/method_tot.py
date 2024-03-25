@@ -4,7 +4,7 @@ from typing import Literal
 from pydantic import Field, computed_field
 
 from sgf_parser.models import MethodType, Method, MethodData, StopCode
-from sgf_parser.models.types import CommentCode
+from sgf_parser.models.types import CommentCode, FlushingVariant
 
 
 class MethodTOTData(MethodData):
@@ -24,7 +24,11 @@ class MethodTOTData(MethodData):
     hammering_pressure: Decimal | None = Field(None, alias="AZ")
 
     # "AQ": "increased_rotation_rate",
+    increased_rotation_rate: bool | None = Field(None, alias="AQ")
+
     # "AR": "flushing",  # flushing
+    flushing: bool | None = Field(None, alias="AR")
+
     # "AS": "shear_strength",
     # "B": "penetration_rate",  # "penetration_rate",
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
@@ -178,3 +182,33 @@ class MethodTOT(Method):
             return Decimal(self.point_z) - self.depth_in_soil
 
         return None
+
+    def flushing_update(self):
+        """
+        Update flushing
+
+        """
+        flushing_variant = self.detect_flushing_rule()
+
+        if flushing_variant == FlushingVariant.AR:
+            return
+
+        for data in self.method_data:
+            data.flushing = self.is_flushing_active(data)
+
+            if flushing_variant == FlushingVariant.K:
+                pass
+            elif flushing_variant == FlushingVariant.I:
+                pass
+
+    def post_processing(self):
+        """
+        Post-processing
+
+        """
+
+        if not self.method_data:
+            return
+
+        # Update flushing, hammering and increased rotation
+        self.flushing_update()

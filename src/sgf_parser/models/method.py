@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, AliasChoices, model_validator
 
 from sgf_parser.datetime_parser import convert_str_to_datetime, convert_str_to_time
 from sgf_parser.models import MethodType
+from sgf_parser.models.types import FlushingVariant, HammeringVariant, RotationVariant
 
 
 class MethodData(BaseModel, abc.ABC):
@@ -64,9 +65,115 @@ class MethodData(BaseModel, abc.ABC):
         return data
 
 
-class Method(BaseModel, abc.ABC):
+# class Method(BaseModel, abc.ABC):
+class Method(BaseModel):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self._flushing_variant: FlushingVariant | None = None
+        self._current_flushing_active_state: bool = False
+        self._hammering_variant: HammeringVariant | None = None
+        self._rotation_variant: RotationVariant | None = None
+
+    # _flushing_variant: FlushingVariant | None = None
+    # _hammering_variant: HammeringVariant | None = None
+    # _rotation_variant: RotationVariant | None = None
+
     def post_processing(self):
         pass
+
+    def detect_flushing_rule(self) -> FlushingVariant:
+        """
+        Call this with the method data before parsing the method data.
+
+        The result of calling this method will set the self.detected_flushing_variant to either use the "K" code if any
+        regulating the flushing are present, the "AR" (flushing on/off) code or the "I" (flushing pressure) code.
+        """
+        if self._flushing_variant:
+            return self._flushing_variant
+
+        if any([getattr(row, "comment_code") in (72, 73, 76, 77) for row in self.method_data]):
+            self._flushing_variant = FlushingVariant.K
+        elif any([getattr(row, "flushing") is not None for row in self.method_data]):
+            self._flushing_variant = FlushingVariant.AR
+        else:
+            self._flushing_variant = FlushingVariant.I
+
+        return self._flushing_variant
+
+    def is_flushing_active(
+        self,
+        data_row,  #: "MethodCPTData" | "MethodTOTData" | "MethodRPData",
+    ) -> bool:
+        """
+        Indicate if flushing is active at given depth.
+
+        The following priority should be used to figure out if flushing is active:
+
+        1. Check K (kode) regulating flushing in file, use only K codes
+        2. If no K codes present in file, then check if "AR" code is present and has
+           a value (0 or 0.0 = off, 1 or 1.0 = on)
+        3. If no "AR" code present in file, then check if "I" (flushing pressure) > 0.1
+        4. Otherwise, return False
+
+        Codes used:
+        Kode 72 (flushing on)
+        Kode 73 (flushing off)
+        Kode 76 (hammer and flushing on)
+        Kode 77 (hammer and flushing off)
+        """
+        if self._flushing_variant == FlushingVariant.K:
+            if data_row.comment_code in (72, 76):
+                self._current_flushing_active_state = True
+            elif data_row.comment_code in (73, 77):
+                self._current_flushing_active_state = False
+
+        elif self._flushing_variant == FlushingVariant.AR:
+            if data_row.flushing is not None:
+                self._current_flushing_active_state = data_row.flushing
+
+        elif self._flushing_variant == FlushingVariant.I:
+            if data_row.flushing_pressure is not None:
+                if data_row.flushing_pressure > Decimal("0.1"):
+                    self._current_flushing_active_state = True
+                else:
+                    self._current_flushing_active_state = False
+
+        return self._current_flushing_active_state
+
+    def detect_hammering_rule(self):
+        """
+        Call this with the method data before parsing the method data.
+
+        The result of calling this method will set the self.detected_hammering_variant to either use the "K" code if
+        any regulating the hammering are present, the "AP" (hammering on/off) code.
+        """
+        if self._hammering_variant:
+            return
+
+        if any([row.get("K") in (74, 75, 76, 77) for row in self.method_data]):
+            self._hammering_variant = "K"
+        else:
+            self._hammering_variant = "AP"
+
+    def detect_increased_rotation_rule(self):
+        """
+        Call this with the method data before parsing the method data.
+
+        The result of calling this method will set the self.detected_increased_rotation_variant to either use the
+        "K" code if any regulating the increased rotation are present, the "AQ" (increased rotation on/off) code
+        or the "R" (rotation rate) code.
+        """
+
+        if self._rotation_variant:
+            return
+
+        if any([row.get("K") in (70, 71) for row in self.method_data]):
+            self._rotation_variant = "K"
+        elif any([row.get("AQ") is not None for row in self.method_data]):
+            self._rotation_variant = "AQ"
+        else:
+            self._rotation_variant = "R"
 
     @model_validator(mode="before")
     @classmethod

@@ -78,3 +78,32 @@ class ParseState(enum.Enum):
     METHOD = 1
     DATA = 2
     QUIT = 3
+
+
+class FlushingVariant(enum.StrEnum):
+    """
+    Flushing variants
+    """
+
+    K = "K"
+    AR = "AR"
+    I = "I"
+
+
+class HammeringVariant(enum.StrEnum):
+    """
+    Hammering variants
+    """
+
+    K = "K"
+    AP = "AP"
+
+
+class RotationVariant(enum.StrEnum):
+    """
+    Rotation variants
+    """
+
+    K = "K"
+    AQ = "AQ"
+    R = "R"
