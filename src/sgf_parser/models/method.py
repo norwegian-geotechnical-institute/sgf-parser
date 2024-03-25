@@ -1,6 +1,7 @@
 import abc
 import re
 from datetime import datetime, time
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel, Field, AliasChoices, model_validator
@@ -108,7 +109,7 @@ class Method(BaseModel, abc.ABC):
     serial_number: str | None = Field(None, alias="HC")
 
     # "HO": "predrilling_depth",
-    predrilling_depth: float = Field(0, alias="HO")
+    predrilling_depth: Decimal = Field(0, alias="HO")
 
     # "HQ": "conducted_by",
     conducted_by: str | None = Field(None, alias="HQ")
@@ -124,13 +125,13 @@ class Method(BaseModel, abc.ABC):
 
     # "MA": "cone_area_ratio",  # same as header code IE
     # "IE": "cone_area_ratio",  # same as header code MA
-    cone_area_ratio: float | None = Field(None, validation_alias=AliasChoices("IE", "MA"))
+    cone_area_ratio: Decimal | None = Field(None, validation_alias=AliasChoices("IE", "MA"))
 
     # "MB": "sleeve_area_ratio",  # same as header code IF
     # "IF": "sleeve_area_ratio",  # same as header code MB
-    sleeve_area_ratio: float | None = Field(None, validation_alias=AliasChoices("IF", "MB"))
+    sleeve_area_ratio: Decimal | None = Field(None, validation_alias=AliasChoices("IF", "MB"))
 
     # "IV": "vane_diameter",  # Not in spec, but seen in example files
-    vane_diameter: float | None = Field(None, alias="IV")
+    vane_diameter: Decimal | None = Field(None, alias="IV")
 
     method_data: list[MethodData]

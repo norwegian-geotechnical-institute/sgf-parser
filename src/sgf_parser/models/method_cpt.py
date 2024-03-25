@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Literal
 
 from pydantic import Field, AliasChoices, computed_field
@@ -12,32 +13,32 @@ class MethodCPTData(MethodData):
     Method CPT data
     """
 
-    penetration_force: float | None = Field(None, alias="A", description="Penetration force (kN)")
-    penetration_rate: float | None = Field(None, alias="B", description="Penetration rate (mm/s)")
-    depth: float = Field(..., alias="D", description="Depth (m)")
+    penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
+    penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
+    depth: Decimal = Field(..., alias="D", description="Depth (m)")
 
     # "F":  Envi format (non-standard)
     # "FS": SGF Standard and Geotech format
-    fs: float | None = Field(None, description="Friction (kPa)", validation_alias=AliasChoices("FS", "F"))
+    fs: Decimal | None = Field(None, description="Friction (kPa)", validation_alias=AliasChoices("FS", "F"))
 
     # "M": "conductivity",  # "conductivity",
-    conductivity: float | None = Field(None, alias="M", description="Conductivity (S/m)")
+    conductivity: Decimal | None = Field(None, alias="M", description="Conductivity (S/m)")
 
-    zero_value_resistance: float | None = Field(
+    zero_value_resistance: Decimal | None = Field(
         None, description="Zero value resistance (MPa)", validation_alias=AliasChoices("NA", "NA2", "NA3")
     )
-    zero_value_friction: float | None = Field(
+    zero_value_friction: Decimal | None = Field(
         None, description="Zero value friction (kPa)", validation_alias=AliasChoices("NB", "NB2", "NB3")
     )
-    zero_value_pressure: float | None = Field(
+    zero_value_pressure: Decimal | None = Field(
         None, description="Zero value pressure (kPa)", validation_alias=AliasChoices("NC", "NC2", "NC3")
     )
     comment_code: int | None = Field(None, alias="K")
-    temperature: float | None = Field(None, alias="O", description="Temperature (degree C)")
-    qc: float | None = Field(None, description="Resistance (MPa)", validation_alias=AliasChoices("QC", "Q"))
-    tilt: float | None = Field(None, alias="TA", description="Inclination (degree)")
+    temperature: Decimal | None = Field(None, alias="O", description="Temperature (degree C)")
+    qc: Decimal | None = Field(None, description="Resistance (MPa)", validation_alias=AliasChoices("QC", "Q"))
+    tilt: Decimal | None = Field(None, alias="TA", description="Inclination (degree)")
     remarks: str | None = Field(None, alias="T")
-    u2: float | None = Field(None, alias="U", description="Shoulder pressure (kPa)")
+    u2: Decimal | None = Field(None, alias="U", description="Shoulder pressure (kPa)")
 
 
 class MethodCPT(Method):
@@ -72,9 +73,9 @@ class MethodCPT(Method):
         (NC, NA, NB, NC2, NA2, NB2) = remarks
 
         try:
-            NA = float(NA)
-            NB = float(NB)
-            NC = float(NC)
+            NA = Decimal(NA)
+            NB = Decimal(NB)
+            NC = Decimal(NC)
         except ValueError:
             return
 
@@ -91,13 +92,13 @@ class MethodCPT(Method):
         self.method_data[0].zero_value_friction = NB
         self.method_data[0].zero_value_pressure = NC
 
-    def _get_data_field_max_value(self, field: str):
+    def _get_data_field_max_value(self, field: str) -> Decimal:
         """
         Return the max value for specified method data row field
         """
-        return max([getattr(row, field) if getattr(row, field) else 0 for row in self.method_data])
+        return max([getattr(row, field) if getattr(row, field) else Decimal("0") for row in self.method_data])
 
-    def _get_depth_delta(self) -> float | None:
+    def _get_depth_delta(self) -> Decimal | None:
         """
         Return the delta dept between the two first method data rows.
         If no data rows, then return None
@@ -128,7 +129,9 @@ class MethodCPT(Method):
 
         return ApplicationClass.OUT_OF_BOUNDS
 
-    def _get_zero_value_class(self, field: str, pressure_class_map: list[tuple[float, ApplicationClass]]):
+    def _get_zero_value_class(
+        self, field: str, pressure_class_map: list[tuple[Decimal, ApplicationClass]]
+    ) -> ApplicationClass:
         """
         Return the application class based on the absolute zero value from the last row of data form the pressure_class_map.
 
@@ -172,10 +175,10 @@ class MethodCPT(Method):
         NA_class = self._get_zero_value_class(
             field="zero_value_resistance",
             pressure_class_map=[
-                (max(35, qc_max_data_value * 5 / 100) / 1000, ApplicationClass.ONE),
-                (max(100, qc_max_data_value * 5 / 100) / 1000, ApplicationClass.TWO),
-                (max(200, qc_max_data_value * 5 / 100) / 1000, ApplicationClass.THREE),
-                (max(500, qc_max_data_value * 5 / 100) / 1000, ApplicationClass.FOUR),
+                (max(Decimal("35"), qc_max_data_value * Decimal("0.05")) / Decimal("1000"), ApplicationClass.ONE),
+                (max(Decimal("100"), qc_max_data_value * Decimal("0.05")) / Decimal("1000"), ApplicationClass.TWO),
+                (max(Decimal("200"), qc_max_data_value * Decimal("0.05")) / Decimal("1000"), ApplicationClass.THREE),
+                (max(Decimal("500"), qc_max_data_value * Decimal("0.05")) / Decimal("1000"), ApplicationClass.FOUR),
             ],
         )
 
@@ -183,10 +186,10 @@ class MethodCPT(Method):
         NB_class = self._get_zero_value_class(
             field="zero_value_friction",
             pressure_class_map=[
-                (max(5, fs_max_data_value * 10 / 100), ApplicationClass.ONE),
-                (max(15, fs_max_data_value * 15 / 100), ApplicationClass.TWO),
-                (max(25, fs_max_data_value * 15 / 100), ApplicationClass.THREE),
-                (max(50, fs_max_data_value * 20 / 100), ApplicationClass.FOUR),
+                (max(Decimal("5"), fs_max_data_value * Decimal("0.1")), ApplicationClass.ONE),
+                (max(Decimal("15"), fs_max_data_value * Decimal("0.15")), ApplicationClass.TWO),
+                (max(Decimal("25"), fs_max_data_value * Decimal("0.15")), ApplicationClass.THREE),
+                (max(Decimal("50"), fs_max_data_value * Decimal("0.2")), ApplicationClass.FOUR),
             ],
         )
 
@@ -194,9 +197,9 @@ class MethodCPT(Method):
         NC_class = self._get_zero_value_class(
             field="zero_value_pressure",
             pressure_class_map=[
-                (max(10, u2_max_data_value * 2 / 100), ApplicationClass.ONE),
-                (max(25, u2_max_data_value * 3 / 100), ApplicationClass.TWO),
-                (max(50, u2_max_data_value * 5 / 100), ApplicationClass.THREE),
+                (max(Decimal("10"), u2_max_data_value * Decimal("0.02")), ApplicationClass.ONE),
+                (max(Decimal("25"), u2_max_data_value * Decimal("0.03")), ApplicationClass.TWO),
+                (max(Decimal("50"), u2_max_data_value * Decimal("0.05")), ApplicationClass.THREE),
             ],
         )
 

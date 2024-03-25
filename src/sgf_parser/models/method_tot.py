@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Literal
 
 from pydantic import Field, computed_field
@@ -12,7 +13,7 @@ class MethodTOTData(MethodData):
     """
 
     # "A": "penetration_force",  # "feed_force",
-    penetration_force: float | None = Field(None, alias="A", description="Penetration force (kN)")
+    penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
 
     # "AB": "maximum_measurement_torque",
     # "AB2": "maximum_measurement_torque_remoulded",
@@ -20,27 +21,27 @@ class MethodTOTData(MethodData):
     hammering: bool | None = Field(None, alias="AP")
 
     # "AZ": "hammering_pressure",
-    hammering_pressure: float | None = Field(None, alias="AZ")
+    hammering_pressure: Decimal | None = Field(None, alias="AZ")
 
     # "AQ": "increased_rotation_rate",
     # "AR": "flushing",  # flushing
     # "AS": "shear_strength",
     # "B": "penetration_rate",  # "penetration_rate",
-    penetration_rate: float | None = Field(None, alias="B", description="Penetration rate (mm/s)")
+    penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
 
     # # "C": "penetration_resistance",  # B = 200/C  (unit: s/0.2m)
-    # penetration_resistance: float | None = Field(None, alias="C")
+    # penetration_resistance: Decimal | None = Field(None, alias="C")
 
     # "D": "depth",  # "depth",
-    depth: float = Field(..., alias="D", description="Depth (m)")
+    depth: Decimal = Field(..., alias="D", description="Depth (m)")
 
     # # "F": "fs",  # "friction"  Envi format
     # # "FS": "fs",  # "friction" Geotech format
     # "I": "flushing_pressure",
-    flushing_pressure: float | None = Field(None, alias="I")
+    flushing_pressure: Decimal | None = Field(None, alias="I")
 
     # "J": "flushing_flow",
-    flushing_flow: float | None = Field(None, alias="J")
+    flushing_flow: Decimal | None = Field(None, alias="J")
 
     # "K": "comment_code",  # "comment_code"
     comment_code: int | None = Field(None, alias="K")
@@ -52,12 +53,12 @@ class MethodTOTData(MethodData):
     # "O": "temperature",  # "temperature",
 
     # "P": "engine_pressure",
-    engine_pressure: float | None = Field(None, alias="P")
+    engine_pressure: Decimal | None = Field(None, alias="P")
 
     # # "Q": "qc",  # "resistance" Envi format
     # # "QC": "qc",  # "resistance" Geotech format
     # "R": "rotation_rate",
-    rotation_rate: float | None = Field(None, alias="R")
+    rotation_rate: Decimal | None = Field(None, alias="R")
 
     # "SV": "sensitivity",
     # "T": "remarks",  # "text",
@@ -67,7 +68,7 @@ class MethodTOTData(MethodData):
     # "U": "u2",  # "shoulder_pressure",
 
     # "V": "torque",  # Vridmoment
-    torque: float | None = Field(None, alias="V")
+    torque: Decimal | None = Field(None, alias="V")
 
 
 class MethodTOT(Method):
@@ -81,7 +82,7 @@ class MethodTOT(Method):
 
     @computed_field
     @property
-    def depth_top(self) -> float | None:
+    def depth_top(self) -> Decimal | None:
         if not self.method_data:
             return None
 
@@ -89,7 +90,7 @@ class MethodTOT(Method):
 
     @computed_field
     @property
-    def depth_base(self) -> float | None:
+    def depth_base(self) -> Decimal | None:
         if not self.method_data:
             return None
 
@@ -105,7 +106,7 @@ class MethodTOT(Method):
 
     @computed_field
     @property
-    def depth_in_rock(self) -> float | None:
+    def depth_in_rock(self) -> Decimal | None:
         _rock_top_depth = None
         _rock_base_depth = None
 
@@ -139,7 +140,7 @@ class MethodTOT(Method):
 
     @computed_field
     @property
-    def depth_in_soil(self) -> float | None:
+    def depth_in_soil(self) -> Decimal | None:
         _depth_in_soil = None
 
         if not self.method_data:
@@ -164,7 +165,7 @@ class MethodTOT(Method):
 
     @computed_field
     @property
-    def bedrock_elevation(self) -> float | None:
+    def bedrock_elevation(self) -> Decimal | None:
         if self.depth_in_soil is None:
             return None
 
@@ -172,6 +173,6 @@ class MethodTOT(Method):
             return None
 
         if self.stopcode in (StopCode.STOP_AGAINST_STONE_BLOCK_OR_ROCK_93, StopCode.STOP_AGAINST_PRESUMED_ROCK_94):
-            return self.point_z - self.depth_in_soil
+            return Decimal(self.point_z) - self.depth_in_soil
 
         return None
