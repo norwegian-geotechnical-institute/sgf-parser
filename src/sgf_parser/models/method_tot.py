@@ -12,6 +12,9 @@ class MethodTOTData(MethodData):
     Method TOT data
     """
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     # "A": "penetration_force",  # "feed_force",
     penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
 
@@ -21,7 +24,7 @@ class MethodTOTData(MethodData):
     hammering: bool | None = Field(None, alias="AP")
 
     # "AZ": "hammering_pressure",
-    hammering_pressure: Decimal | None = Field(None, alias="AZ")
+    hammering_pressure: Decimal | None = Field(None, alias="AZ", description="Hammering pressure (MPa)")
 
     # "AQ": "increased_rotation_rate",
     increased_rotation_rate: bool | None = Field(None, alias="AQ")
@@ -42,10 +45,10 @@ class MethodTOTData(MethodData):
     # # "F": "fs",  # "friction"  Envi format
     # # "FS": "fs",  # "friction" Geotech format
     # "I": "flushing_pressure",
-    flushing_pressure: Decimal | None = Field(None, alias="I")
+    flushing_pressure: Decimal | None = Field(None, alias="I", description="Flushing pressure (MPa)")
 
     # "J": "flushing_flow",
-    flushing_flow: Decimal | None = Field(None, alias="J")
+    flushing_flow: Decimal | None = Field(None, alias="J", description="Flushing flow (l/min)")
 
     # "K": "comment_code",  # "comment_code"
     comment_code: int | None = Field(None, alias="K")
@@ -57,12 +60,12 @@ class MethodTOTData(MethodData):
     # "O": "temperature",  # "temperature",
 
     # "P": "engine_pressure",
-    engine_pressure: Decimal | None = Field(None, alias="P")
+    engine_pressure: Decimal | None = Field(None, alias="P", description="Engine pressure (MPa)")
 
     # # "Q": "qc",  # "resistance" Envi format
     # # "QC": "qc",  # "resistance" Geotech format
     # "R": "rotation_rate",
-    rotation_rate: Decimal | None = Field(None, alias="R")
+    rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
 
     # "SV": "sensitivity",
     # "T": "remarks",  # "text",
@@ -72,13 +75,16 @@ class MethodTOTData(MethodData):
     # "U": "u2",  # "shoulder_pressure",
 
     # "V": "torque",  # Vridmoment
-    torque: Decimal | None = Field(None, alias="V")
+    torque: Decimal | None = Field(None, alias="V", description="Torque (kNm)")
 
 
 class MethodTOT(Method):
     """
     Method TOT
     """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     name: str = "TOT"
 
@@ -193,6 +199,26 @@ class MethodTOT(Method):
         for data in self.method_data:
             data.flushing = self.is_flushing_active(data)
 
+    def hammering_update(self):
+        """
+        Update hammering
+
+        """
+        self._hammering_variant = self.detect_hammering_rule()
+
+        for data in self.method_data:
+            data.hammering = self.is_hammer_active(data)
+
+    def rotation_update(self):
+        """
+        Update rotation
+
+        """
+        self._rotation_variant = self.detect_increased_rotation_rule()
+
+        for data in self.method_data:
+            data.increased_rotation_rate = self.is_increased_rotation_active(data)
+
     def post_processing(self):
         """
         Post-processing
@@ -204,3 +230,5 @@ class MethodTOT(Method):
 
         # Update flushing, hammering and increased rotation
         self.flushing_update()
+        self.hammering_update()
+        # self.rotation_update()

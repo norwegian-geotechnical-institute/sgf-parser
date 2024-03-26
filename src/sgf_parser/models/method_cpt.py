@@ -13,6 +13,9 @@ class MethodCPTData(MethodData):
     Method CPT data
     """
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
@@ -45,6 +48,9 @@ class MethodCPT(Method):
     """
     Method CPT
     """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     name: str = "CPT"
     method_type: Literal[MethodType.CPT] = MethodType.CPT

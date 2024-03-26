@@ -67,17 +67,14 @@ class MethodData(BaseModel, abc.ABC):
 
 # class Method(BaseModel, abc.ABC):
 class Method(BaseModel):
+    _flushing_variant: FlushingVariant | None = None
+    _current_flushing_active_state: bool = False
+    _hammering_variant: HammeringVariant | None = None
+    _current_hammer_active_state: bool = False
+    _rotation_variant: RotationVariant | None = None
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        self._flushing_variant: FlushingVariant | None = None
-        self._current_flushing_active_state: bool = False
-        self._hammering_variant: HammeringVariant | None = None
-        self._rotation_variant: RotationVariant | None = None
-
-    # _flushing_variant: FlushingVariant | None = None
-    # _hammering_variant: HammeringVariant | None = None
-    # _rotation_variant: RotationVariant | None = None
 
     def post_processing(self):
         pass
@@ -92,7 +89,13 @@ class Method(BaseModel):
         if self._flushing_variant:
             return self._flushing_variant
 
-        if any([getattr(row, "comment_code") in (72, 73, 76, 77) for row in self.method_data]):
+        if any(
+            [
+                row.comment_code in (72, 73, 76, 77)
+                or any(x in (72, 73, 76, 77) for x in self.extract_codes(row.remarks))
+                for row in self.method_data
+            ]
+        ):
             self._flushing_variant = FlushingVariant.CODE_K
         elif any([getattr(row, "flushing") is not None for row in self.method_data]):
             self._flushing_variant = FlushingVariant.CODE_AR
@@ -155,20 +158,62 @@ class Method(BaseModel):
 
         return self._current_flushing_active_state
 
-    def detect_hammering_rule(self):
+    def detect_hammering_rule(self) -> HammeringVariant | None:
         """
-        Call this with the method data before parsing the method data.
+        Call this with the method data loaded before parsing the hammering in the method data.
 
-        The result of calling this method will set the self.detected_hammering_variant to either use the "K" code if
+        The result of calling this method will set the self._hammering_variant to either use the "K" code if
         any regulating the hammering are present, the "AP" (hammering on/off) code.
         """
         if self._hammering_variant:
-            return
+            return self._hammering_variant
 
-        if any([row.get("K") in (74, 75, 76, 77) for row in self.method_data]):
-            self._hammering_variant = "K"
+        if any(
+            [
+                row.comment_code in (74, 75, 76, 77)
+                or any(x in (74, 75, 76, 77) for x in self.extract_codes(row.remarks))
+                for row in self.method_data
+            ]
+        ):
+            self._hammering_variant = HammeringVariant.K
         else:
-            self._hammering_variant = "AP"
+            self._hammering_variant = HammeringVariant.AP
+
+        return self._hammering_variant
+
+    def is_hammer_active(
+        self,
+        data_row,  #: models.MethodCPTData| models.MethodTOTData| models.MethodRPData| models.MethodSRSData,
+    ) -> bool:
+        """
+        Indicate if hammer is active at given depth.
+
+        The following priority should be used to figure out if the hammer is active:
+
+        1. Check K (kode)
+        2. Check "AP" value (0 or 0.0 = off, 1 or 1.0 = on)
+        3. Otherwise, return False
+
+        Codes used:
+        Kode 74 (hammer on)
+        Kode 75 (hammer off)
+        Kode 76 (hammer and flushing on)
+        Kode 77 (hammer and flushing off)
+        """
+        if self._hammering_variant == HammeringVariant.K:
+            if data_row.comment_code in (74, 76) or any(x in (74, 76) for x in self.extract_codes(data_row.remarks)):
+                self._current_hammer_active_state = True
+                return self._current_hammer_active_state
+            elif data_row.comment_code in (75, 77) or any(x in (75, 77) for x in self.extract_codes(data_row.remarks)):
+                self._current_hammer_active_state = False
+                return self._current_hammer_active_state
+
+        elif self._hammering_variant == HammeringVariant.AP:
+            if data_row.hammering is not None:
+                self._current_hammer_active_state = data_row.hammering
+                return self._current_hammer_active_state
+
+        return self._current_hammer_active_state
 
     def detect_increased_rotation_rule(self):
         """
