@@ -85,9 +85,9 @@ class FlushingVariant(enum.StrEnum):
     Flushing variants
     """
 
-    K = "K"
-    AR = "AR"
-    I = "I"
+    CODE_K = "K"
+    CODE_AR = "AR"
+    CODE_I = "I"
 
 
 class HammeringVariant(enum.StrEnum):

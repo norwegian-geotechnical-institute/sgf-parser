@@ -93,11 +93,11 @@ class Method(BaseModel):
             return self._flushing_variant
 
         if any([getattr(row, "comment_code") in (72, 73, 76, 77) for row in self.method_data]):
-            self._flushing_variant = FlushingVariant.K
+            self._flushing_variant = FlushingVariant.CODE_K
         elif any([getattr(row, "flushing") is not None for row in self.method_data]):
-            self._flushing_variant = FlushingVariant.AR
+            self._flushing_variant = FlushingVariant.CODE_AR
         else:
-            self._flushing_variant = FlushingVariant.I
+            self._flushing_variant = FlushingVariant.CODE_I
 
         return self._flushing_variant
 
@@ -135,18 +135,18 @@ class Method(BaseModel):
         Kode 76 (hammer and flushing on)
         Kode 77 (hammer and flushing off)
         """
-        if self._flushing_variant == FlushingVariant.K:
+        if self._flushing_variant == FlushingVariant.CODE_K:
             if data_row.comment_code in (72, 76) or any(x in (72, 76) for x in self.extract_codes(data_row.remarks)):
                 self._current_flushing_active_state = True
             # TODO: check remark for extra codes
             elif data_row.comment_code in (73, 77) or any(x in (73, 77) for x in self.extract_codes(data_row.remarks)):
                 self._current_flushing_active_state = False
 
-        elif self._flushing_variant == FlushingVariant.AR:
+        elif self._flushing_variant == FlushingVariant.CODE_AR:
             if data_row.flushing is not None:
                 self._current_flushing_active_state = data_row.flushing
 
-        elif self._flushing_variant == FlushingVariant.I:
+        elif self._flushing_variant == FlushingVariant.CODE_I:
             if data_row.flushing_pressure is not None:
                 if data_row.flushing_pressure > Decimal("0.1"):
                     self._current_flushing_active_state = True
