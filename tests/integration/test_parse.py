@@ -126,13 +126,15 @@ class TestParse:
                 datetime(2024, 2, 1, 9, 58),
                 {
                     Decimal("0.01"): {"comment_code": 74, "remarks": "Slag starter", "hammering": True, "flushing": False},
-                    Decimal("1.33"): {"comment_code": 72, "hammering": True},
+                    Decimal("0.02"): {"comment_code": None, "remarks": None, "hammering": True, "flushing": False},
+                    Decimal("1.33"): {"comment_code": 72, "hammering": True, "flushing": True},
                     Decimal("1.69"): {"comment_code": 73, "remarks": "75, Slag slutter, Spyling slutter", "hammering": False, "flushing": False},
                     Decimal("1.70"): {"comment_code": None, "hammering": False, "flushing": False},
                     Decimal("7.58"): {"comment_code": 72, "remarks": "Spyling begynner",  "hammering": False, "flushing": True},
                     Decimal("7.59"): {"comment_code": None, "remarks": None,  "hammering": False, "flushing": True},
                     Decimal("7.90"): {"comment_code": None, "remarks": None,  "hammering": False, "flushing": True},
                     Decimal("7.91"): {"comment_code": 74, "remarks": "Slag starter", "hammering": True, "flushing": True},
+                    Decimal("45.03"): {"comment_code": None, "remarks": None, "hammering": True, "flushing": True},
                     Decimal("45.04"): {
                         "comment_code": 90,
                         "remarks": "73, 75, Spyling slutter, Slag slutter, Sondering avsluten uten å ha oppnådd stopp",
@@ -240,7 +242,8 @@ class TestParse:
 
         for row in method.method_data:
             if row.depth in data_rows:
+                print(f"===> depth={row.depth}")
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-                    # print(f"{key} {getattr(row, key)} == {data_rows[row.depth][key]}")
+                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
