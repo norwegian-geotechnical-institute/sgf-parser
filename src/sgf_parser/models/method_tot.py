@@ -231,4 +231,4 @@ class MethodTOT(Method):
         # Update flushing, hammering and increased rotation
         self.flushing_update()
         self.hammering_update()
-        # self.rotation_update()
+        self.rotation_update()

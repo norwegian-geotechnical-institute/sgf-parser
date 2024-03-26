@@ -72,6 +72,7 @@ class Method(BaseModel):
     _hammering_variant: HammeringVariant | None = None
     _current_hammer_active_state: bool = False
     _rotation_variant: RotationVariant | None = None
+    _current_increased_rotation_state: bool = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -215,24 +216,66 @@ class Method(BaseModel):
 
         return self._current_hammer_active_state
 
-    def detect_increased_rotation_rule(self):
+    def detect_increased_rotation_rule(self) -> RotationVariant | None:
         """
-        Call this with the method data before parsing the method data.
+        Call this with the method data before updating the increased rotation in the method data.
 
-        The result of calling this method will set the self.detected_increased_rotation_variant to either use the
+        The result of calling this method will set the self._increased_rotation_variant to either use the
         "K" code if any regulating the increased rotation are present, the "AQ" (increased rotation on/off) code
         or the "R" (rotation rate) code.
         """
 
         if self._rotation_variant:
-            return
+            return self._rotation_variant
 
-        if any([row.get("K") in (70, 71) for row in self.method_data]):
-            self._rotation_variant = "K"
-        elif any([row.get("AQ") is not None for row in self.method_data]):
-            self._rotation_variant = "AQ"
+        if any(
+            [
+                row.comment_code in (70, 71) or any(x in (70, 71) for x in self.extract_codes(row.remarks))
+                for row in self.method_data
+            ]
+        ):
+            self._rotation_variant = RotationVariant.K
+        elif any([row.increased_rotation_rate is not None for row in self.method_data]):
+            self._rotation_variant = RotationVariant.AQ
         else:
-            self._rotation_variant = "R"
+            self._rotation_variant = RotationVariant.R
+
+        return self._rotation_variant
+
+    def is_increased_rotation_active(
+        self,
+        data_row,  #: models.MethodCPTData | models.MethodTOTData | models.MethodRPData,
+    ) -> bool:
+        """
+        Indicate if increased rotation speed is active at a given depth.
+
+        The following priority should be used to figure out if increased rotation speed is active:
+
+        1. Check K (kode)
+        2. Check "AQ" value (0 or 0.0 = off, 1 or 1.0 = on)
+        3. If rotation (R) > 35 rpm set increased rotation
+        4. Otherwise, return False
+
+        Codes used:
+        Kode 70 (increased rotation speed on)
+        Kode 71 (increased rotation speed off)
+        """
+        if self._rotation_variant == RotationVariant.K:
+            if data_row.comment_code == 70:
+                self._current_increased_rotation_state = True
+            elif data_row.comment_code == 71:
+                self._current_increased_rotation_state = False
+        elif self._rotation_variant == RotationVariant.AQ:
+            if data_row.increased_rotation_rate is not None:
+                self._current_increased_rotation_state = data_row.increased_rotation_rate
+        else:
+            if data_row.rotation_rate is not None:
+                if data_row.rotation_rate > 35:
+                    self._current_increased_rotation_state = True
+                else:
+                    self._current_increased_rotation_state = False
+
+        return self._current_increased_rotation_state
 
     @model_validator(mode="before")
     @classmethod
