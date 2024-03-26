@@ -4,7 +4,7 @@ from typing import Literal
 from pydantic import Field, computed_field
 
 from sgf_parser.models import MethodType, Method, MethodData, StopCode
-from sgf_parser.models.types import CommentCode, FlushingVariant
+from sgf_parser.models.types import CommentCode
 
 
 class MethodTOTData(MethodData):
@@ -188,18 +188,10 @@ class MethodTOT(Method):
         Update flushing
 
         """
-        flushing_variant = self.detect_flushing_rule()
-
-        if flushing_variant == FlushingVariant.AR:
-            return
+        self._flushing_variant = self.detect_flushing_rule()
 
         for data in self.method_data:
             data.flushing = self.is_flushing_active(data)
-
-            if flushing_variant == FlushingVariant.K:
-                pass
-            elif flushing_variant == FlushingVariant.I:
-                pass
 
     def post_processing(self):
         """

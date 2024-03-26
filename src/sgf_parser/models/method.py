@@ -101,6 +101,19 @@ class Method(BaseModel):
 
         return self._flushing_variant
 
+    @classmethod
+    def extract_codes(cls, remarks: str) -> tuple[int, ...]:
+        """
+        Extract any two-digit codes from the remarks string.
+
+        Must be on the format "
+        """
+        if not remarks:
+            return tuple()
+
+        result = re.findall(r"(?:^| )(\d\d)(?:,|$)", remarks)
+        return tuple(int(r) for r in result)
+
     def is_flushing_active(
         self,
         data_row,  #: "MethodCPTData" | "MethodTOTData" | "MethodRPData",
@@ -113,7 +126,7 @@ class Method(BaseModel):
         1. Check K (kode) regulating flushing in file, use only K codes
         2. If no K codes present in file, then check if "AR" code is present and has
            a value (0 or 0.0 = off, 1 or 1.0 = on)
-        3. If no "AR" code present in file, then check if "I" (flushing pressure) > 0.1
+        3. If no "AR" code is present in the file, then check if "I" (flushing pressure) > 0.1
         4. Otherwise, return False
 
         Codes used:
@@ -123,9 +136,10 @@ class Method(BaseModel):
         Kode 77 (hammer and flushing off)
         """
         if self._flushing_variant == FlushingVariant.K:
-            if data_row.comment_code in (72, 76):
+            if data_row.comment_code in (72, 76) or any(x in (72, 76) for x in self.extract_codes(data_row.remarks)):
                 self._current_flushing_active_state = True
-            elif data_row.comment_code in (73, 77):
+            # TODO: check remark for extra codes
+            elif data_row.comment_code in (73, 77) or any(x in (73, 77) for x in self.extract_codes(data_row.remarks)):
                 self._current_flushing_active_state = False
 
         elif self._flushing_variant == FlushingVariant.AR:

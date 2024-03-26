@@ -60,7 +60,6 @@ class TestTotFlushing:
     ("AR_ON", "I_ON", "AR_OFF", "D", "I_ON", "K_MULTI_ON", "D", "K_MULTI_ON", "D", "AR_OFF", "K_MULTI_OFF", "K_MULTI_ON_REVERSE", "D", "K_MULTI_OFF_REVERSE", "K_90"),
     (False,    False,   False, False, False, True,        True,  True,        True, True,    False,          True,                True, False,                 False),
 ),
-
         ],
     )
     # fmt: on
