@@ -180,36 +180,6 @@ class MethodTOT(Method):
 
         return None
 
-    def flushing_update(self):
-        """
-        Update flushing
-
-        """
-        self._flushing_variant = self.detect_flushing_rule()
-
-        for data in self.method_data:
-            data.flushing = self.is_flushing_active(data)
-
-    def hammering_update(self):
-        """
-        Update hammering
-
-        """
-        self._hammering_variant = self.detect_hammering_rule()
-
-        for data in self.method_data:
-            data.hammering = self.is_hammer_active(data)
-
-    def rotation_update(self):
-        """
-        Update rotation
-
-        """
-        self._rotation_variant = self.detect_increased_rotation_rule()
-
-        for data in self.method_data:
-            data.increased_rotation_rate = self.is_increased_rotation_active(data)
-
     def post_processing(self):
         """
         Post-processing

@@ -37,15 +37,10 @@ class MethodCPTData(MethodData):
         None, description="Zero value pressure (kPa)", validation_alias=AliasChoices("NC", "NC2", "NC3")
     )
 
-    # Moved to MethodData:
-    # comment_code: int | None = Field(None, alias="K")
-
     temperature: Decimal | None = Field(None, alias="O", description="Temperature (degree C)")
     qc: Decimal | None = Field(None, description="Resistance (MPa)", validation_alias=AliasChoices("QC", "Q"))
     tilt: Decimal | None = Field(None, alias="TA", description="Inclination (degree)")
 
-    # Moved to MethodData:
-    # remarks: str | None = Field(None, alias="T")
     u2: Decimal | None = Field(None, alias="U", description="Shoulder pressure (kPa)")
 
 

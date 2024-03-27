@@ -281,6 +281,36 @@ class Method(BaseModel):
 
         return self._current_increased_rotation_state
 
+    def flushing_update(self):
+        """
+        Update flushing
+
+        """
+        self._flushing_variant = self.detect_flushing_rule()
+
+        for data in self.method_data:
+            data.flushing = self.is_flushing_active(data)
+
+    def hammering_update(self):
+        """
+        Update hammering
+
+        """
+        self._hammering_variant = self.detect_hammering_rule()
+
+        for data in self.method_data:
+            data.hammering = self.is_hammer_active(data)
+
+    def rotation_update(self):
+        """
+        Update rotation
+
+        """
+        self._rotation_variant = self.detect_increased_rotation_rule()
+
+        for data in self.method_data:
+            data.increased_rotation_rate = self.is_increased_rotation_active(data)
+
     @model_validator(mode="before")
     @classmethod
     def guess_date_format(cls, data: Any) -> Any:

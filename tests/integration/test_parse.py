@@ -247,3 +247,51 @@ class TestParse:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+    # fmt: off
+    @pytest.mark.parametrize(
+        "file_name, number_of_data_rows, stop_code, depth_top, depth_base, conducted_at, data_rows",
+        (
+(
+    "tests/data/rp-test-1.std", 565, 90, Decimal("1.725"), Decimal("15.825"),
+    datetime(2021, 1, 27, 14, 23, 23),
+    {
+        Decimal("1.725"): {"comment_code": None, "remarks": None, "flushing": False, "increased_rotation_rate": False, "penetration_rate": Decimal('24'), "torque": Decimal('0.495'), "rotation_rate": Decimal('0')},
+        Decimal("13.950"): {"comment_code": None, "remarks": None, "flushing": False, "increased_rotation_rate": False, "penetration_rate": Decimal('52.5'), "torque": Decimal('0.153'), "rotation_rate": Decimal('27')},
+        Decimal("15.825"): {"comment_code": 90,  "remarks": "Avbruten utan stopp", "penetration_rate": Decimal('0')},
+    },
+),
+(
+    "tests/data/rp-test-2.std", 1483, 95, Decimal("0.01"), Decimal("14.83"), 
+    datetime(2018, 12, 7, 10, 20),
+    {
+        Decimal("0.01"): {"comment_code": 1, "remarks": None, "flushing": False, "increased_rotation_rate": False, "penetration_rate": Decimal('0.42'), "rotation_rate": Decimal('28')},
+        Decimal("14.76"): {"comment_code": None, "remarks": None, "increased_rotation_rate": False, "penetration_rate": Decimal('64.03'), "rotation_rate": Decimal('81'), "penetration_force": Decimal("28.53")},
+        Decimal("14.83"): {"comment_code": 95, "remarks": None},
+    },
+),
+        ),
+    )
+    # fmt: on
+    def test_parse_rp(
+            self, file_name, number_of_data_rows, stop_code, depth_top, depth_base, conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="utf-8") as file:
+            [method] = Parser().parse(file)
+
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.RP
+        assert len(method.method_data) == number_of_data_rows
+        assert stop_code == method.stopcode
+        assert method.depth_base == pytest.approx(depth_base)
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                print(f"===> depth={row.depth}")
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
