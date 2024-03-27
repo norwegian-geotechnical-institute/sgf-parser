@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 
 from sgf_parser import Parser, models
+from sgf_parser.models.types import SoundingClass
 
 point_z = 40.5
 
@@ -286,6 +287,104 @@ class TestParse:
         assert stop_code == method.stopcode
         assert method.depth_base == pytest.approx(depth_base)
         assert method.depth_top == pytest.approx(depth_top)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                print(f"===> depth={row.depth}")
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+
+
+
+    @pytest.mark.parametrize(
+        "file_name, sounding_class, number_of_data_rows, stop_code, depth_top, depth_base, "
+        # "depth_in_soil, depth_in_rock, bedrock_elevation, "
+        "conducted_at, data_rows",
+        (
+(
+    "tests/data/srs-test-1.jb3", SoundingClass.JB3, 664, 95, Decimal("0.025"), Decimal("16.6"),
+    # Decimal("16.6"), None, None,
+    datetime(2023, 3, 23, 17, 33, 1),
+    {
+        # D=0.025,A=0.043,W=0.043,AK=174217,AKZ=5028,H=8,B=7.2,C=27.7,V=0.000,AB=0,S=0,SM=0,AP=0,R=7,AQ=0,P=0.046,PR=0.000,I=0.908,AZ=0.000,J=6.822,VB=0.2,AD=4
+        Decimal("0.025"): {"penetration_force": Decimal("0.043"), "penetration_rate": Decimal('7.2'), 
+                           "torque": Decimal('0'), "rotation_rate": Decimal('7'), "increased_rotation_rate": False,
+                           "flushing_pressure": Decimal("0.908"), "flushing_flow": Decimal("6.822"), "flushing": True,
+                           "hammering": False, "comment_code": None, "remarks": None},
+        Decimal("0.05"): {"penetration_force": Decimal("-0.015"), "penetration_rate": Decimal('175'),
+                          "torque": Decimal('0'),
+                          "rotation_rate": Decimal('7'), "increased_rotation_rate": False,
+                          "flushing_pressure": Decimal("0.332"), "flushing_flow": Decimal("17.948"), "flushing": True,
+                          "hammering": False, "comment_code": None, "remarks": None},
+        Decimal("16.575"): {"hammering": False, "flushing": True, "increased_rotation_rate": True, "penetration_rate": Decimal('5.1'), "rotation_rate": Decimal('73')},
+        Decimal("16.6"): {"increased_rotation_rate": False, "comment_code": 95,  "remarks": "(JB) avbruten", "penetration_rate": Decimal('4.1')},
+    },
+),
+(
+    "tests/data/srs-test-2.jbt", SoundingClass.JBTOT, 445, 95, Decimal("0.025"), Decimal("11.125"), 
+    # Decimal('8.125'), Decimal('11.125') - Decimal('8.125'), Decimal(point_z - 8.125),
+    datetime(2023, 8, 8, 11, 0, 29),
+    {
+        Decimal("0.025"): {"comment_code": None, "remarks": None, "flushing": False, "increased_rotation_rate": False, "penetration_rate": Decimal('14.829'), "rotation_rate": Decimal('7')},
+        Decimal("8.000"): {"comment_code": None, "remarks": None, "increased_rotation_rate": True, "penetration_rate": Decimal('15.106'), "rotation_rate": Decimal('24'), "penetration_force": Decimal("18.062")},
+        Decimal("8.025"): {"remarks": "Uppdragning: Medelkraft=-0.45 kN; Rotationshastighet=86 RPM; Stighastighet=134 mm/sec", 
+                           "increased_rotation_rate": True, "penetration_rate": Decimal('0.302'), 
+                           "rotation_rate": Decimal('85'), "penetration_force": Decimal("1.864")},
+        Decimal("8.125"): {"comment_code": 80, "remarks": "Bergnivå Berg", "increased_rotation_rate": True, 
+                           "penetration_rate": Decimal('6.059'), "rotation_rate": Decimal('84'), 
+                           "penetration_force": Decimal("4.893")},
+        Decimal("11.100"): {"comment_code": None, "remarks": None, "increased_rotation_rate": True, 
+                            "penetration_rate": Decimal('4.781'), "rotation_rate": Decimal('86'), 
+                            "penetration_force": Decimal("4.646")},
+        Decimal("11.125"): {"comment_code": 95, "remarks": "(JB) avbruten", "increased_rotation_rate": False},
+    },
+),
+            
+    # A=penetration_force
+    # B=penetration_rate (mm/s), 
+    # V=torque (kNm), AP=hammering (on/off), 
+    # R=rotation rate (rpm), AQ=Rotation (on/off), P=engine_pressure (MPa), PR=?, I=flushing_pressure , 
+    # AZ=hammering_pressure, J=flushing_flow
+(
+    "tests/data/srs-test-3.jbt", SoundingClass.JBTOT, 888, 95, Decimal("0.025"), Decimal("22.2"),
+    # Decimal('8.125'), Decimal('11.125') - Decimal('8.125'), Decimal(point_z - 8.125),
+    datetime(2021, 5, 28, 8, 44, 43),
+    {
+        Decimal("0.025"): {"comment_code": None, "remarks": None, "flushing": False,
+                           "increased_rotation_rate": False, "penetration_rate": Decimal('3.848'),
+                           "rotation_rate": Decimal('7')},
+        Decimal("20.500"): {"comment_code": None, 
+                            "remarks": "Uppdragning: Medelkraft=-0.45 kN; Rotationshastighet=57 RPM; Stighastighet= 3 mm/sec", 
+                            "increased_rotation_rate": True},
+        Decimal("22.2"): {"comment_code": 95, "remarks": "(JB) avbruten", "increased_rotation_rate": True},
+    },
+),
+        ),
+    )
+    # fmt: on
+    def test_parse_srs(
+            self, file_name, sounding_class, number_of_data_rows, stop_code, depth_top, depth_base, 
+            # depth_in_soil, depth_in_rock, bedrock_elevation, 
+            conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
+            [method] = Parser().parse(file)
+
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.SRS
+        assert method.sounding_class == sounding_class
+        assert len(method.method_data) == number_of_data_rows
+        assert stop_code == method.stopcode
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.depth_base == pytest.approx(depth_base)
+        # assert method.depth_in_soil == pytest.approx(depth_in_soil)
+        # assert method.depth_in_rock == pytest.approx(depth_in_rock)
+        # assert method.bedrock_elevation == pytest.approx(bedrock_elevation)
         assert method.conducted_at == conducted_at
 
         for row in method.method_data:

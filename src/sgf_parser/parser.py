@@ -26,10 +26,10 @@ class Parser:
         "107B": models.MethodCPT,
         "23": models.MethodRP,
         "24": models.MethodTOT,
-        # "12": models.MethodSRS,
-        # "41": models.MethodSRS,
-        # "42": models.MethodSRS,
-        # "73": models.MethodSRS,
+        "12": models.MethodSRS,
+        "41": models.MethodSRS,
+        "42": models.MethodSRS,
+        "73": models.MethodSRS,
         # "13": models.MethodSVT,
     }
 
@@ -121,7 +121,7 @@ class Parser:
         if header["HM"] not in self.method_code_class_mapping:
             raise ValueError(f"Unsupported value in the HM field {header['HM']!r}")
 
-        return self.method_code_class_mapping[header["HM"]].model_validate(header)  # type: ignore
+        return self.method_code_class_mapping[header["HM"]].model_validate(header)
 
     def parse_data(self, method: Method, row: str) -> MethodData:
         row_dict = self._convert_str_to_dict(row)

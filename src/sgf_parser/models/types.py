@@ -67,6 +67,7 @@ class CommentCode(enum.IntEnum):
     ROCK_OR_BEDROCK_41 = 41
     ROCK_END_42 = 42
     BEDROCK_43 = 43
+    ROCK_LEVEL_80 = 80
 
 
 class ParseState(enum.Enum):
@@ -107,3 +108,20 @@ class RotationVariant(enum.StrEnum):
     K = "K"
     AQ = "AQ"
     R = "R"
+
+
+class SoundingClass(enum.StrEnum):
+    """
+    Soil-Rock-Sounding (Swedish Jord-bergsondering) classes
+    (
+    JB1 = Jb-1,
+    JB2 = Jb-2,
+    JB3 = Jb-3,
+    JBTOT = Jb-tot,
+    )
+    """
+
+    JB1 = "Jb-1"
+    JB2 = "Jb-2"
+    JB3 = "Jb-3"
+    JBTOT = "Jb-tot"
