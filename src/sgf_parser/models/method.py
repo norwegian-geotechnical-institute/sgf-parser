@@ -64,6 +64,10 @@ class MethodData(BaseModel, abc.ABC):
 
         return data
 
+    # "K": "comment_code",  # "comment_code"
+    comment_code: int | None = Field(None, alias="K")
+    remarks: str | None = Field(None, alias="T")
+
 
 # class Method(BaseModel, abc.ABC):
 class Method(BaseModel):
@@ -106,7 +110,7 @@ class Method(BaseModel):
         return self._flushing_variant
 
     @classmethod
-    def extract_codes(cls, remarks: str) -> tuple[int, ...]:
+    def extract_codes(cls, remarks: str | None) -> tuple[int, ...]:
         """
         Extract any two-digit codes from the remarks string.
 
@@ -288,7 +292,7 @@ class Method(BaseModel):
                 # If KD is present, but HD is not, set HD since it is the same as KD
                 data["HD"] = convert_str_to_datetime(data["KD"])
 
-            if "HD" in data and data["HD"] is not None:
+            elif "HD" in data and data["HD"] is not None:
                 data["HD"] = convert_str_to_datetime(data["HD"])
 
             if "HI" in data and data["HI"] is not None and "HD" in data and data["HD"] is not None:

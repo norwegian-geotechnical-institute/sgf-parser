@@ -50,9 +50,6 @@ class MethodTOTData(MethodData):
     # "J": "flushing_flow",
     flushing_flow: Decimal | None = Field(None, alias="J", description="Flushing flow (l/min)")
 
-    # "K": "comment_code",  # "comment_code"
-    comment_code: int | None = Field(None, alias="K")
-
     # "M": "conductivity",  # "conductivity",
     # "NA": "zero_value_resistance",  # "zero_value_resistance",
     # "NB": "zero_value_friction",  # "zero_value_friction",
@@ -68,8 +65,6 @@ class MethodTOTData(MethodData):
     rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
 
     # "SV": "sensitivity",
-    # "T": "remarks",  # "text",
-    remarks: str | None = Field(None, alias="T")
 
     # "TA": "tilt",  # "tilt",
     # "U": "u2",  # "shoulder_pressure",
@@ -93,7 +88,6 @@ class MethodTOT(Method):
     method_data: list[MethodTOTData] = []
 
     @computed_field
-    @property
     def depth_top(self) -> Decimal | None:
         if not self.method_data:
             return None
@@ -101,7 +95,6 @@ class MethodTOT(Method):
         return min(method_data.depth for method_data in self.method_data)
 
     @computed_field
-    @property
     def depth_base(self) -> Decimal | None:
         if not self.method_data:
             return None
@@ -109,7 +102,6 @@ class MethodTOT(Method):
         return max(method_data.depth for method_data in self.method_data)
 
     @computed_field
-    @property
     def stopcode(self) -> int | None:
         if not self.method_data:
             return None
@@ -117,7 +109,6 @@ class MethodTOT(Method):
         return self.method_data[-1].comment_code
 
     @computed_field
-    @property
     def depth_in_rock(self) -> Decimal | None:
         _rock_top_depth = None
         _rock_base_depth = None
@@ -151,7 +142,6 @@ class MethodTOT(Method):
         return depth_in_rock
 
     @computed_field
-    @property
     def depth_in_soil(self) -> Decimal | None:
         _depth_in_soil = None
 
@@ -176,16 +166,17 @@ class MethodTOT(Method):
         return _depth_in_soil
 
     @computed_field
-    @property
     def bedrock_elevation(self) -> Decimal | None:
-        if self.depth_in_soil is None:
-            return None
-
         if self.point_z is None:
             return None
 
+        _depth_in_soil: Decimal | None = self.depth_in_soil
+
+        if _depth_in_soil is None:
+            return None
+
         if self.stopcode in (StopCode.STOP_AGAINST_STONE_BLOCK_OR_ROCK_93, StopCode.STOP_AGAINST_PRESUMED_ROCK_94):
-            return Decimal(self.point_z) - self.depth_in_soil
+            return Decimal(self.point_z) - _depth_in_soil
 
         return None
 

@@ -36,11 +36,16 @@ class MethodCPTData(MethodData):
     zero_value_pressure: Decimal | None = Field(
         None, description="Zero value pressure (kPa)", validation_alias=AliasChoices("NC", "NC2", "NC3")
     )
-    comment_code: int | None = Field(None, alias="K")
+
+    # Moved to MethodData:
+    # comment_code: int | None = Field(None, alias="K")
+
     temperature: Decimal | None = Field(None, alias="O", description="Temperature (degree C)")
     qc: Decimal | None = Field(None, description="Resistance (MPa)", validation_alias=AliasChoices("QC", "Q"))
     tilt: Decimal | None = Field(None, alias="TA", description="Inclination (degree)")
-    remarks: str | None = Field(None, alias="T")
+
+    # Moved to MethodData:
+    # remarks: str | None = Field(None, alias="T")
     u2: Decimal | None = Field(None, alias="U", description="Shoulder pressure (kPa)")
 
 
@@ -77,12 +82,12 @@ class MethodCPT(Method):
         # NB: The values in the header are all in kPa, but we store NA in MPa.
         # The diff at the end are OK (NA MPa, NB kPa, NC kPa).
         # It is correct that the order is not A, B, C, ...:
-        (NC, NA, NB, NC2, NA2, NB2) = remarks
+        NC_str, NA_str, NB_str, _, _, _ = remarks
 
         try:
-            NA = Decimal(NA)
-            NB = Decimal(NB)
-            NC = Decimal(NC)
+            NA: Decimal = Decimal(NA_str)
+            NB: Decimal = Decimal(NB_str)
+            NC: Decimal = Decimal(NC_str)
         except ValueError:
             return
 
@@ -251,23 +256,20 @@ class MethodCPT(Method):
             return ApplicationClass.UNKNOWN
 
     @computed_field
-    @property
-    def depth_top(self) -> float | None:
+    def depth_top(self) -> Decimal | None:
         if not self.method_data:
             return None
 
         return min(method_data.depth for method_data in self.method_data)
 
     @computed_field
-    @property
-    def depth_base(self) -> float | None:
+    def depth_base(self) -> Decimal | None:
         if not self.method_data:
             return None
 
         return max(method_data.depth for method_data in self.method_data)
 
     @computed_field
-    @property
     def stopcode(self) -> int | None:
         if not self.method_data:
             return None

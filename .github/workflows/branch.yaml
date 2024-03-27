@@ -46,8 +46,8 @@ jobs:
         run: poetry install
       - name: Run ruff
         run: poetry run ruff check .
-#      - name: Run mypy
-#        run: poetry run mypy .
+      - name: Run mypy
+        run: poetry run mypy .
       - name: Run bandit
         run: poetry run bandit .
       - name: Run safety
