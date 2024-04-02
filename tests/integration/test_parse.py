@@ -344,12 +344,11 @@ class TestParse:
         Decimal("11.125"): {"comment_code": 95, "remarks": "(JB) avbruten", "increased_rotation_rate": False},
     },
 ),
-#
-#     # A=penetration_force
-#     # B=penetration_rate (mm/s),
-#     # V=torque (kNm), AP=hammering (on/off),
-#     # R=rotation rate (rpm), AQ=Rotation (on/off), P=engine_pressure (MPa), PR=?, I=flushing_pressure ,
-#     # AZ=hammering_pressure, J=flushing_flow
+# A=penetration_force
+# B=penetration_rate (mm/s),
+# V=torque (kNm), AP=hammering (on/off),
+# R=rotation rate (rpm), AQ=Rotation (on/off), P=engine_pressure (MPa), PR=?, I=flushing_pressure ,
+# AZ=hammering_pressure, J=flushing_flow
 (
     "tests/data/srs-test-3.jbt", SoundingClass.JBTOT, 888, 95, Decimal("0.025"), Decimal("22.2"),
     Decimal("22.2"), None, Decimal(point_z) - Decimal("22.2"),   # TODO: Is bedrock elevation correct K=95, but not bedrock indication
@@ -386,6 +385,52 @@ class TestParse:
         assert method.depth_in_soil == pytest.approx(depth_in_soil)
         assert method.depth_in_rock == pytest.approx(depth_in_rock)
         assert method.bedrock_elevation == pytest.approx(bedrock_elevation)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                print(f"===> depth={row.depth}")
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+
+
+    @pytest.mark.parametrize(
+        "file_name, number_of_data_rows, depth_top, depth_base, "
+        "conducted_at, data_rows",
+        (
+(
+    "tests/data/svt-test-1.std", 7, Decimal("2"), Decimal("10"),
+    datetime(2021, 6, 30, 9, 33),
+    {
+        # D=2.00,AS=13.008,SV=12.880
+        Decimal("2"): {"comment_code": None, "remarks": None, "shear_strength": Decimal("13.008"), "sensitivity": Decimal("12.880")},
+        Decimal("3"): {"shear_strength": Decimal("13.440"), "sensitivity": Decimal("10.5")},
+        Decimal("4"): {"shear_strength": Decimal("15.359"), "sensitivity": Decimal("8.98")},
+        Decimal("4.99"): {"shear_strength": Decimal("16.334"), "sensitivity": Decimal("6.92")},
+        Decimal("6"): {"shear_strength": Decimal("16.750"), "sensitivity": Decimal("8.38")},
+        Decimal("8"): {"shear_strength": Decimal("18.974"), "sensitivity": Decimal("7.67")},
+        Decimal("10"): {"comment_code": None, "remarks": None, "shear_strength": Decimal("18.974"), "sensitivity": Decimal("5.3")},
+    },
+),
+         ),
+    )
+    # fmt: on
+    def test_parse_svt(
+            self, file_name, number_of_data_rows, depth_top, depth_base,
+            conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
+            [method] = Parser().parse(file)
+
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.SVT
+        assert len(method.method_data) == number_of_data_rows
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.depth_base == pytest.approx(depth_base)
         assert method.conducted_at == conducted_at
 
         for row in method.method_data:

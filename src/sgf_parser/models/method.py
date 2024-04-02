@@ -375,6 +375,6 @@ class Method(BaseModel):
     sleeve_area_ratio: Decimal | None = Field(None, validation_alias=AliasChoices("IF", "MB"))
 
     # "IV": "vane_diameter",  # Not in spec, but seen in example files
-    vane_diameter: Decimal | None = Field(None, alias="IV")
+    vane_diameter: Decimal | None = Field(None, alias="IV", description="Diameter of the vane used (mm).")
 
     method_data: list[MethodData]
