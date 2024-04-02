@@ -32,8 +32,8 @@ class MethodSVT(Method):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    name: str = "SRS"
-    method_type: Literal[MethodType.SRS] = MethodType.SVT
+    name: str = "SVT"
+    method_type: Literal[MethodType.SVT] = MethodType.SVT
     method_data_type: type[MethodSVTData] = MethodSVTData
 
     method_data: list[MethodSVTData] = []
