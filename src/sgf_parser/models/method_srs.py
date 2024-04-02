@@ -126,6 +126,7 @@ class MethodSRS(Method):
                 CommentCode.ROCK_OR_BEDROCK_41,
                 CommentCode.BEDROCK_43,
                 CommentCode.ROCK_LEVEL_80,
+                StopCode.STOP_AGAINST_PRESUMED_ROCK_94,
             ):
                 _rock_top_depth = sample.depth
                 if _rock_base_depth is None:
@@ -143,13 +144,13 @@ class MethodSRS(Method):
 
     @computed_field
     def depth_in_soil(self) -> Decimal | None:
-        _depth_in_soil = None
-
         if not self.method_data:
             return None
 
         if self.stopcode in (StopCode.INTERRUPTED_WITHOUT_STOP_90, StopCode.CANNOT_DRIVE_FURTHER_91):
             return self.method_data[-1].depth
+
+        _depth_in_soil: Decimal | None = None
 
         for sample in self.method_data[::-1]:
             if sample.comment_code == CommentCode.ROCK_END_42:
@@ -160,6 +161,7 @@ class MethodSRS(Method):
             elif sample.comment_code in (
                 CommentCode.ROCK_OR_BEDROCK_41,
                 CommentCode.BEDROCK_43,
+                StopCode.STOP_AGAINST_PRESUMED_ROCK_94,
                 CommentCode.ROCK_LEVEL_80,
             ):
                 _depth_in_soil = sample.depth
@@ -171,9 +173,10 @@ class MethodSRS(Method):
 
     @computed_field
     def bedrock_elevation(self) -> Decimal | None:
-        # TODO: Unclear how to calculate bedrock elevation. Is it calculated in the same way as total soundings?
-        # Does stop code 95 mean that the sounding was interrupted before reaching bedrock?
-        # Does stop code 80 mean that the sounding reached bedrock?
+        # TODO: Unclear how to calculate bedrock elevation.
+        #  Is it calculated in the same way as the norwegian total soundings?
+        #  Does stop code 95 mean that the sounding was interrupted before reaching bedrock?
+        #  Does stop code 80 mean that the sounding reached bedrock?
 
         if self.point_z is None:
             return None
@@ -186,6 +189,7 @@ class MethodSRS(Method):
         if self.stopcode in (
             StopCode.STOP_AGAINST_STONE_BLOCK_OR_ROCK_93,
             StopCode.STOP_AGAINST_PRESUMED_ROCK_94,
+            StopCode.SOUNDING_INTERRUPTED_95,  # TODO: Verify this ???
         ):
             return Decimal(self.point_z) - _depth_in_soil
 
