@@ -20,7 +20,7 @@ pip install sgf-parser
 ```python
 from sgf_parser import Parser
 
-with open("c:/dev/sgf-parser/tests/data/cpt-test-3.cpt", "rt") as file:
+with open("tests/data/cpt-test-3.cpt", "rt") as file:
     # The test file only contains one method
     [method] = Parser().parse(file)
 
