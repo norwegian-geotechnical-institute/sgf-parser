@@ -68,6 +68,9 @@ class MethodData(BaseModel, abc.ABC):
     comment_code: int | None = Field(None, alias="K")
     remarks: str | None = Field(None, alias="T")
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.depth}>"
+
 
 # class Method(BaseModel, abc.ABC):
 class Method(BaseModel):
@@ -378,3 +381,6 @@ class Method(BaseModel):
     vane_diameter: Decimal | None = Field(None, alias="IV", description="Diameter of the vane used (mm).")
 
     method_data: list[MethodData]
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.method_type} method_data={self.method_data!r}>"
