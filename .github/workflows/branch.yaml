@@ -53,4 +53,4 @@ jobs:
       - name: Run safety
         run: poetry run safety check
       - name: Check for acceptable licenses
-        run: poetry run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0)"
+        run: poetry run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL)"
