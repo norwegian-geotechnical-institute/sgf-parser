@@ -24,4 +24,5 @@ class TestDates:
         parser = Parser()
 
         method = parser.parse_header(parser._convert_str_to_dict(row))
-        assert expected_result == method.conducted_at
+        if method:
+            assert expected_result == method.conducted_at

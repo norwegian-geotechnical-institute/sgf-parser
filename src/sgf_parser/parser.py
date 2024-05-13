@@ -110,7 +110,7 @@ class Parser:
                 result[k] = v
         return result
 
-    def parse_header(self, header: dict[str, Any]) -> Method:
+    def parse_header(self, header: dict[str, Any]) -> Method | None:
         """
         When finished collecting the header dict, then create the Method object
         """
