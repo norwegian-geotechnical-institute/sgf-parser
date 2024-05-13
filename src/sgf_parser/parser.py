@@ -81,8 +81,6 @@ class Parser:
                 case ParseState.HEADER | ParseState.METHOD:
                     header |= self._convert_str_to_dict(row)
                 case ParseState.DATA:
-                    #if not method:
-                        #raise ValueError("No method to add data to")
                     if method:
                         method.method_data.append(self.parse_data(method, row))
                 case ParseState.QUIT:
@@ -120,7 +118,6 @@ class Parser:
             raise ValueError("Header does not contain a HM field")
 
         if header["HM"] not in self.method_code_class_mapping:
-            #raise ValueError(f"Unsupported value in the HM field {header['HM']!r}")
             return None
 
         return self.method_code_class_mapping[header["HM"]].model_validate(header)
