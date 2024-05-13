@@ -440,3 +440,31 @@ class TestParse:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+    @pytest.mark.parametrize(
+        "file_name",
+        ("tests/data/dt-test-1.std",) 
+    )
+
+    def test_ignore_unsupported_test(
+            self, file_name
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
+            methods = Parser().parse(file)
+        
+        assert methods == []
+
+    @pytest.mark.parametrize(
+        "file_name",
+        ("tests/data/cpt-dt-test-1.std",) 
+    )
+
+    def test_return_one_method_ignore_another(
+            self, file_name
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
+            methods = Parser().parse(file)
+        
+        assert len(methods) == 1
+
+        
