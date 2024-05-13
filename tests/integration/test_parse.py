@@ -443,7 +443,9 @@ class TestParse:
 
     @pytest.mark.parametrize(
         "file_name",
-        ("tests/data/dt-test-1.std",) 
+        ("tests/data/dt-test-1.std",
+          "tests/data/cpt-test-wrong-type.cpt",
+        ) 
     )
 
     def test_ignore_unsupported_test(

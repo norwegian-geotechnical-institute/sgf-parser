@@ -10,7 +10,6 @@ class TestFileErrors:
         [
             ("tests/data/cpt-test-malformed-data-1.cpt", ValidationError),
             ("tests/data/cpt-test-malformed-date-header.cpt", ValidationError),
-            ("tests/data/cpt-test-wrong-type.cpt", ValueError),
         ],
     )
     def test_error_handling_malformed_files(self, file_name, expected_exception):
