@@ -12,3 +12,4 @@ class MethodType(enum.StrEnum):
     SVT = "SVT"
     TOT = "TOT"
     WST = "WST"
+    DT = "DT"

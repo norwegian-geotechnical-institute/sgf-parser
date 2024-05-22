@@ -31,6 +31,7 @@ class Parser:
         "42": models.MethodSRS,
         "73": models.MethodSRS,
         "13": models.MethodSVT,
+        "35": models.MethodDT,
     }
 
     def parse(self, file: TextIO) -> list[Method]:
