@@ -453,8 +453,6 @@ class TestParse:
         with open(file_name, "r", encoding="windows-1252") as file:
             methods = Parser().parse(file)
         
-        print(methods)
-
         assert methods
 
     @pytest.mark.parametrize(
