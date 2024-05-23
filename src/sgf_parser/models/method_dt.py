@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field, computed_field
+from pydantic import Field
 
 from sgf_parser.models import MethodType, MethodData, Method
 
