@@ -16,7 +16,7 @@ class MethodDTData(MethodData):
 
     elapsed_time: Decimal | None = Field(None, alias="AD", description="Elapsed time (s)")
     u2: Decimal | None = Field(None, alias="AG", description="Shoulder pressure (kPa)")
-    depth: None = None
+    depth: Decimal | None = None
 
 class MethodDT(Method):
     """
@@ -31,20 +31,6 @@ class MethodDT(Method):
     method_data_type: type[MethodDTData] = MethodDTData
 
     method_data: list[MethodDTData] = []
-
-    @computed_field
-    def depth_top(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return min(method_data.depth for method_data in self.method_data)
-
-    @computed_field
-    def depth_base(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return max(method_data.depth for method_data in self.method_data)
 
     @computed_field
     def stopcode(self) -> int | None:
