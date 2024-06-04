@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, computed_field
 
 from sgf_parser.models import MethodType, MethodData, Method
 
@@ -17,6 +17,7 @@ class MethodDTData(MethodData):
     time: Decimal | None = Field(None, alias="AD", description="Elapsed time (s)")
     u2: Decimal | None = Field(None, alias="AG", description="Shoulder pressure (kPa)")
     depth: Decimal | None = Field(None, alias="D", description="Depth (m)")
+
 
 class MethodDT(Method):
     """
