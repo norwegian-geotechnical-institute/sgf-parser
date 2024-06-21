@@ -15,7 +15,7 @@ exclude = '''
 
 [tool.poetry]
 name = "sgf-parser"
-version = "0.0.1a2"
+version = "0.0.1b1"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 license = "MIT"
 authors = ["Jostein Leira <jostein@leira.net>"]
@@ -61,7 +61,7 @@ python = ">=3.11,<4"
 pydantic = "^2.6.3"
 python-dateutil = "^2.9.0.post0"
 types-python-dateutil = "^2.8.19.20240311"
-pint = "^0.23"
+pint = "^0.24"
 
 
 [tool.poetry.group.dev.dependencies]
