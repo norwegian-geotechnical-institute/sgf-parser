@@ -8,3 +8,4 @@ from sgf_parser.models.method_rp import MethodRP, MethodRPData
 from sgf_parser.models.method_srs import MethodSRS, MethodSRSData
 from sgf_parser.models.method_svt import MethodSVT, MethodSVTData
 from sgf_parser.models.method_tot import MethodTOT, MethodTOTData
+from sgf_parser.models.method_wst import MethodWST, MethodWSTData

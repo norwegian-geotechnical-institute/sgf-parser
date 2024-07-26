@@ -469,3 +469,44 @@ class TestParse:
         assert len(methods) == 2
 
 
+
+
+    @pytest.mark.parametrize(
+        "file_name, number_of_data_rows, depth_top, depth_base, "
+        "conducted_at, data_rows",
+        (
+(
+    "tests/data/wst-test-1.vim", 65, Decimal("0.025"), Decimal("1.625"),
+    datetime(2022, 11, 1, 11, 7,5),
+    {
+        # penetration rate=B, hammering=AP, load=W, turning=H, rotation_rate=R
+        Decimal("0.025"): {"comment_code": None, "remarks": None, "penetration_rate": Decimal("0.3"), "hammering": False, "rotation_rate":Decimal("0")},
+        Decimal("0.350"): {"penetration_rate": Decimal("2.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("-0.796"), "turning": Decimal("0")},
+        Decimal("0.375"): {"penetration_rate": Decimal("0.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("1.02"), "turning": Decimal("1112")},
+    },
+),
+         ),
+    )
+    # fmt: on
+    def test_parse_wst(
+            self, file_name, number_of_data_rows, depth_top, depth_base,
+            conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
+            [method] = Parser().parse(file)
+
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.WST
+        assert len(method.method_data) == number_of_data_rows
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.depth_base == pytest.approx(depth_base)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                # print(f"===> depth={row.depth}")
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                    # print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")

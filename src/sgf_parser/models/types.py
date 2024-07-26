@@ -125,3 +125,12 @@ class SoundingClass(enum.StrEnum):
     JB2 = "Jb-2"
     JB3 = "Jb-3"
     JBTOT = "Jb-tot"
+
+
+class Operation(enum.StrEnum):
+    """
+    Operation
+    """
+
+    MANUAL = "MANUAL"
+    MECHANICAL = "MECHANICAL"
