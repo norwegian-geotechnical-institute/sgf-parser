@@ -5,7 +5,6 @@ from pydantic import Field, AliasChoices, computed_field
 
 from sgf_parser.models import MethodType, MethodData, Method
 from sgf_parser.models.types import ApplicationClass
-from sgf_parser.units import unit
 
 
 class MethodCPTData(MethodData):
@@ -95,7 +94,8 @@ class MethodCPT(Method):
         if self.method_data[0].zero_value_pressure:
             return
 
-        self.method_data[0].zero_value_resistance = (NA * unit.kPa).to(unit.MPa).magnitude
+        # self.method_data[0].zero_value_resistance = (NA * unit.kPa).to(unit.MPa).magnitude
+        self.method_data[0].zero_value_resistance = NA * Decimal("0.001")
         self.method_data[0].zero_value_friction = NB
         self.method_data[0].zero_value_pressure = NC
 
@@ -177,7 +177,8 @@ class MethodCPT(Method):
 
         qc_max_data_value = self._get_data_field_max_value(field="qc")  # MPa
         # convert to kPa
-        qc_max_data_value = (qc_max_data_value * unit.MPa).to(unit.kPa).magnitude
+        # qc_max_data_value = (qc_max_data_value * unit.MPa).to(unit.kPa).magnitude
+        qc_max_data_value = qc_max_data_value * Decimal("1000")
 
         NA_class = self._get_zero_value_class(
             field="zero_value_resistance",

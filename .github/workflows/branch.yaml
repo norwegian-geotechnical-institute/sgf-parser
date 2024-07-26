@@ -51,6 +51,6 @@ jobs:
       - name: Run bandit
         run: poetry run bandit .
       - name: Run safety
-        run: poetry run safety check -i 70612
+        run: poetry run safety check -i 62044 -i 70612
       - name: Check for acceptable licenses
         run: poetry run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL)"

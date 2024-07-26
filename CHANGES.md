@@ -1,11 +1,17 @@
 # NGI Python SGF Parser Package
 
+_2024-07-26_
 
-_2024-06-04_
-
-Version 0.0.1a3
+Version 0.0.1b2
 
 Support Weight Sounding Test (WST) (Swedish Viktsondering)
+
+_2024-06-21_
+
+Version 0.0.1b1
+
+Update packages.
+
 
 _2024-05-22_
 
