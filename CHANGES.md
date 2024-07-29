@@ -1,6 +1,6 @@
 # NGI Python SGF Parser Package
 
-_2024-07-26_
+_2024-07-29_
 
 Version 0.0.1b2
 

@@ -16,7 +16,7 @@ class MethodWSTData(MethodData):
         super().__init__(**kwargs)
 
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
-    turning: Decimal = Field(..., alias="H", description="Turning (half revolution /0.2 m)")
+    turning: Decimal = Field(..., alias="H", description="Turning (half revolution/0.2 m)")
     load: Decimal = Field(..., alias="W", description="Load (kN)")
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
 
