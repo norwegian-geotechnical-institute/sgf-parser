@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, computed_field
 
 from sgf_parser.models import MethodType, MethodData, Method
 
@@ -18,6 +18,7 @@ class MethodDTData(MethodData):
     u2: Decimal | None = Field(None, alias="AG", description="Shoulder pressure (kPa)")
     depth: Decimal | None = Field(None, alias="D", description="Depth (m)")
 
+
 class MethodDT(Method):
     """
     Method Pore Pressure Dissipation Test (placeholder)
@@ -31,3 +32,19 @@ class MethodDT(Method):
     method_data_type: type[MethodDTData] = MethodDTData
 
     method_data: list[MethodDTData] = []
+
+    @computed_field
+    def stopcode(self) -> int | None:
+        if not self.method_data:
+            return None
+
+        return self.method_data[-1].comment_code
+
+    def post_processing(self):
+        """
+        Post-processing
+
+        """
+
+        if not self.method_data:
+            return
