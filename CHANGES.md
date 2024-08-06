@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2024-08-06_
+
+Version 0.0.1b3
+
+Fix bug in SGFParser that causes the parser to fail if it contains several comment codes (in "K" column) but no remarks (in "T" column).
+
 _2024-07-29_
 
 Version 0.0.1b2

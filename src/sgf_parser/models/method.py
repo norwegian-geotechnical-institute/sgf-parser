@@ -57,11 +57,11 @@ class MethodData(BaseModel, abc.ABC):
                 _code, _rest = cls._extract_comment_code(data)
                 data["K"] = _code
                 if _rest:
-                    if data["T"]:
-                        data["T"] = f"{_rest}, {data['T']}"
-                    else:
+                    if "T" not in data:
                         data["T"] = _rest
-
+                    else:
+                        data["T"] = f"{_rest}, {data['T']}"
+                    
         return data
 
     # "K": "comment_code",  # "comment_code"
