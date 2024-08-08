@@ -510,3 +510,10 @@ class TestParse:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     # print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+def test_parse_file_with_text_in_K_code():
+        file_name = "tests/data/tot-test-9.TOT"
+        with open(file_name, "r", encoding="utf-8") as file:
+            [method] = Parser().parse(file)
+
+        assert method
