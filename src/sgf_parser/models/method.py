@@ -58,7 +58,8 @@ class MethodData(BaseModel, abc.ABC):
                 # sometimes K is a string with i.e. "SAND", in that case we want to move it to T
                 
                 data_K_split = data["K"].split(", ") # in case there are multiple K codes
-                K_is_digit = all([x.isdigit() for x in data_K_split])
+                K_is_digit = all([x[0:2].isdigit() for x in data_K_split]) 
+                # only check the first two characters, in case someone wrote e.g. "94rock" or "41blokk"
                 
                 if not K_is_digit:
                     # move it to T (remarks column)
@@ -79,11 +80,6 @@ class MethodData(BaseModel, abc.ABC):
                         else:
                             data["T"] = f"{_rest}, {data['T']}"
 
-                
-                
-                
-                
-                    
         return data
 
     # "K": "comment_code",  # "comment_code"
