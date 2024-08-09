@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2024-08-08_
+
+Version 0.0.1b4
+
+Fix edge case where strings are given in the "K" code, e.g. "K=SAND". These are not moved to the "T"/remarks column, as "K" is reserved for (integer) comment codes.
+
 _2024-08-06_
 
 Version 0.0.1b3

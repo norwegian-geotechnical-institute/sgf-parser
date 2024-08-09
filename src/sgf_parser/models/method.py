@@ -52,16 +52,31 @@ class MethodData(BaseModel, abc.ABC):
         Sometimes we get more than one code on a data row, then we need to prioritize what code to keep.
         """
         if isinstance(data, dict):
-            # Detect string variants of the comment code and convert them to integers
             if "K" in data and data["K"] is not None:
-                _code, _rest = cls._extract_comment_code(data)
-                data["K"] = _code
-                if _rest:
+                
+                # We want to interpret K as a stop code (with integer value)
+                # sometimes K is a string with e.g. "SAND", in that case we move it to T
+                K_is_digit = any(char.isdigit() for char in data["K"])
+                
+                if not K_is_digit:
+                    # move it to T (remarks column)
                     if "T" not in data:
-                        data["T"] = _rest
+                        data["T"] = data["K"]
                     else:
-                        data["T"] = f"{_rest}, {data['T']}"
+                        data["T"] = f"{data['K']}, {data['T']}"
                     
+                    del data["K"]
+                
+                else:
+                    # we identify the most important stop code, and move the rest to T
+                    _code, _rest = cls._extract_comment_code(data)
+                    data["K"] = _code
+                    if _rest:
+                        if "T" not in data:
+                            data["T"] = _rest
+                        else:
+                            data["T"] = f"{_rest}, {data['T']}"
+
         return data
 
     # "K": "comment_code",  # "comment_code"
