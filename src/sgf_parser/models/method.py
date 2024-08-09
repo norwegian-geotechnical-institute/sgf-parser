@@ -55,11 +55,8 @@ class MethodData(BaseModel, abc.ABC):
             if "K" in data and data["K"] is not None:
                 
                 # We want to interpret K as a stop code (with integer value)
-                # sometimes K is a string with i.e. "SAND", in that case we want to move it to T
-                
-                data_K_split = data["K"].split(", ") # in case there are multiple K codes
-                K_is_digit = all([x[0:2].isdigit() for x in data_K_split]) 
-                # only check the first two characters, in case someone wrote e.g. "94rock" or "41blokk"
+                # sometimes K is a string with e.g. "SAND", in that case we move it to T
+                K_is_digit = any(char.isdigit() for char in data["K"])
                 
                 if not K_is_digit:
                     # move it to T (remarks column)
