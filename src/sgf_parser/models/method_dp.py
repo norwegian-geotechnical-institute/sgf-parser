@@ -16,12 +16,13 @@ class MethodDPData(MethodData):
         super().__init__(**kwargs)
 
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
-    # turning: Decimal = Field(..., alias="H", description="Turning (half revolution/0.2 m)")
-    # load: Decimal = Field(..., alias="W", description="Load (kN)")
-    # penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
-    #
-    # hammering: bool | None = Field(None, alias="AP")
-    # rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
+
+    penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
+    penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
+    torque: Decimal | None = Field(None, alias="V", description="Torque (kNm)")
+    ramming: Decimal = Field(None, alias="S", description="Ramming (Blow/0.2 m)")
+    rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
+    increased_rotation_rate: bool | None = Field(None, alias="AQ")
 
 
 class MethodDP(Method):

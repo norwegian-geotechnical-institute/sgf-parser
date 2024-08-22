@@ -512,24 +512,32 @@ class TestParse:
 
     # fmt: off
     @pytest.mark.parametrize(
-        "file_name, number_of_data_rows,stop_code, depth_top, depth_base, "
+        "file_name, number_of_data_rows,stop_code, predrilling_depth, depth_top, depth_base, "
         "conducted_at, data_rows",
         (
 (
-    "tests/data/dp-test-1.hfa", 194, 93, Decimal("2.025"), Decimal("6.850"),
+    "tests/data/dp-test-1.hfa", 194, 93, 2, Decimal("2.025"), Decimal("6.850"),
     datetime(2023, 9, 7, 11, 48,17),
     {
-        # penetration rate=B, hammering=AP, load=W, turning=H, rotation_rate=R
-        Decimal("0.025"): {"comment_code": None, "remarks": None, "penetration_rate": Decimal("0.3"), "hammering": False, "rotation_rate":Decimal("0")},
-        Decimal("0.350"): {"penetration_rate": Decimal("2.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("-0.796"), "turning": Decimal("0")},
-        Decimal("0.375"): {"penetration_rate": Decimal("0.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("1.02"), "turning": Decimal("1112")},
+        # penetration_force=A, penetration rate=B, torque=V, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+        Decimal("2.025"): {"comment_code": None, "remarks": None, "penetration_force":Decimal("1.002"), "penetration_rate": Decimal("438.805"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("2.350"): {"penetration_force":Decimal("1.093"), "penetration_rate": Decimal("56.87"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("3.000"): {"remarks": "1,0 Nm", "penetration_force":Decimal("0.274"), "penetration_rate": Decimal("11.569"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("3.375"): {"penetration_force":Decimal("0.144"), "penetration_rate": Decimal("7.079"), "torque":Decimal("0"), "ramming":Decimal("16"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("6.825"): {"comment_code": 40, "remarks": "Nm", "penetration_force": Decimal("0.638"),
+                           "penetration_rate": Decimal("0.101"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                           "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+        Decimal("6.850"): {"comment_code": 93, "remarks": "Stopp mot sten", "penetration_force": Decimal("0.391"),
+                           "penetration_rate": Decimal("0.050"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                           "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+
     },
 ),
          ),
     )
     # fmt: on
     def test_parse_dp(
-            self, file_name, number_of_data_rows, stop_code, depth_top, depth_base,
+            self, file_name, number_of_data_rows, stop_code, predrilling_depth, depth_top, depth_base,
             conducted_at, data_rows
     ):
         with open(file_name, "r", encoding="windows-1252") as file:
@@ -540,6 +548,7 @@ class TestParse:
         assert method.method_type == models.MethodType.DP
         assert len(method.method_data) == number_of_data_rows
         assert method.stopcode == stop_code
+        assert method.predrilling_depth == predrilling_depth
         assert method.depth_top == pytest.approx(depth_top)
         assert method.depth_base == pytest.approx(depth_base)
         assert method.conducted_at == conducted_at

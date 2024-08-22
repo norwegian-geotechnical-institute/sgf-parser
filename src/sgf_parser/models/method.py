@@ -14,6 +14,7 @@ from sgf_parser.models.types import FlushingVariant, HammeringVariant, RotationV
 class MethodData(BaseModel, abc.ABC):
     @classmethod
     def _fix_malformed_data(cls, code: str) -> str | None:
+        """Wrong K codes as "4,0" will be converted to "40"."""
         return re.sub("[^0-9]", "", code)
 
     @classmethod
@@ -53,20 +54,19 @@ class MethodData(BaseModel, abc.ABC):
         """
         if isinstance(data, dict):
             if "K" in data and data["K"] is not None:
-                
                 # We want to interpret K as a stop code (with integer value)
                 # sometimes K is a string with e.g. "SAND", in that case we move it to T
                 K_is_digit = any(char.isdigit() for char in data["K"])
-                
+
                 if not K_is_digit:
                     # move it to T (remarks column)
                     if "T" not in data:
                         data["T"] = data["K"]
                     else:
                         data["T"] = f"{data['K']}, {data['T']}"
-                    
+
                     del data["K"]
-                
+
                 else:
                     # we identify the most important stop code, and move the rest to T
                     _code, _rest = cls._extract_comment_code(data)
