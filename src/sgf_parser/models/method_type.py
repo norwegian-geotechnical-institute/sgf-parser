@@ -7,9 +7,10 @@ class MethodType(enum.StrEnum):
     """
 
     CPT = "CPT"
+    DP = "DP"
+    DT = "DT"
     RP = "RP"
     SRS = "SRS"
     SVT = "SVT"
     TOT = "TOT"
     WST = "WST"
-    DT = "DT"

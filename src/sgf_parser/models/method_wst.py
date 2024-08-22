@@ -4,7 +4,7 @@ from typing import Literal, Any
 from pydantic import Field, model_validator, computed_field
 
 from sgf_parser.models import MethodData, Method, MethodType
-from sgf_parser.models.types import Operation
+from sgf_parser.models.types import Operation, DPType
 
 
 class MethodWSTData(MethodData):
@@ -60,8 +60,11 @@ class MethodWST(Method):
         if isinstance(data, dict):
             if "HM" in data and data["HM"] is not None:
                 data["operation"] = {
-                    "101": Operation.MANUAL,
-                    "102": Operation.MECHANICAL,
+                    "108A": DPType.DPSH_A,
+                    "108B": DPType.DPL,
+                    "108C": DPType.DPM,
+                    "108D": DPType.DPH,
+                    "108E": DPType.DPSH_B,
                 }[data["HM"]]
 
         return data

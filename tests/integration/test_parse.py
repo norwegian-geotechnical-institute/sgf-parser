@@ -297,9 +297,7 @@ class TestParse:
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, sounding_class, number_of_data_rows, stop_code, depth_top, depth_base, "
         "depth_in_soil, depth_in_rock, bedrock_elevation, "
@@ -395,8 +393,7 @@ class TestParse:
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, number_of_data_rows, depth_top, depth_base, "
         "conducted_at, data_rows",
@@ -441,12 +438,13 @@ class TestParse:
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name",
         ("tests/data/dt-test-1.std",
         ) 
     )
-
+    # fmt: on
     def test_placeholder_dissipation_test(
             self, file_name
     ):
@@ -455,11 +453,12 @@ class TestParse:
         
         assert methods
 
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name",
         ("tests/data/cpt-dt-test-1.std",) 
     )
-
+    # fmt: on
     def test_return_one_method_one_placeholder(
             self, file_name
     ):
@@ -468,9 +467,7 @@ class TestParse:
         
         assert len(methods) == 2
 
-
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, number_of_data_rows, depth_top, depth_base, "
         "conducted_at, data_rows",
@@ -511,9 +508,54 @@ class TestParse:
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     # print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-def test_parse_file_with_text_in_K_code():
-        file_name = "tests/data/tot-test-9.TOT"
-        with open(file_name, "r", encoding="utf-8") as file:
+
+
+    # fmt: off
+    @pytest.mark.parametrize(
+        "file_name, number_of_data_rows,stop_code, depth_top, depth_base, "
+        "conducted_at, data_rows",
+        (
+(
+    "tests/data/dp-test-1.hfa", 194, 93, Decimal("2.025"), Decimal("6.850"),
+    datetime(2023, 9, 7, 11, 48,17),
+    {
+        # penetration rate=B, hammering=AP, load=W, turning=H, rotation_rate=R
+        Decimal("0.025"): {"comment_code": None, "remarks": None, "penetration_rate": Decimal("0.3"), "hammering": False, "rotation_rate":Decimal("0")},
+        Decimal("0.350"): {"penetration_rate": Decimal("2.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("-0.796"), "turning": Decimal("0")},
+        Decimal("0.375"): {"penetration_rate": Decimal("0.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("1.02"), "turning": Decimal("1112")},
+    },
+),
+         ),
+    )
+    # fmt: on
+    def test_parse_dp(
+            self, file_name, number_of_data_rows, stop_code, depth_top, depth_base,
+            conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="windows-1252") as file:
             [method] = Parser().parse(file)
 
-        assert method
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.DP
+        assert len(method.method_data) == number_of_data_rows
+        assert method.stopcode == stop_code
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.depth_base == pytest.approx(depth_base)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                # print(f"===> depth={row.depth}")
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                    # print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
+
+
+def test_parse_file_with_text_in_K_code():
+    file_name = "tests/data/tot-test-9.TOT"
+    with open(file_name, "r", encoding="utf-8") as file:
+        [method] = Parser().parse(file)
+
+    assert method

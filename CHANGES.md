@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2024-08-22_
+
+Version 0.0.1b5
+
+Add support for Dynamic Probing (DP).
+
 _2024-08-08_
 
 Version 0.0.1b4
