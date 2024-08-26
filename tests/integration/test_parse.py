@@ -614,7 +614,7 @@ class TestParse:
             self, file_name, number_of_data_rows, stop_code, predrilling_depth, depth_top, depth_base,
             conducted_at, data_rows
     ):
-        with open(file_name, "r", encoding="ansi") as file:
+        with open(file_name, "r", encoding="cp1250") as file:
             [method] = Parser().parse(file)
 
         method.point_z = point_z
