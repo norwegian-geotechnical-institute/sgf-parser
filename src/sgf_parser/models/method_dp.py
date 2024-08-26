@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, Any
 
-from pydantic import Field, model_validator, computed_field
+from pydantic import Field, model_validator, computed_field, AliasChoices
 
 from sgf_parser.models import MethodData, Method, MethodType
 from sgf_parser.models.types import DPType
@@ -18,9 +18,23 @@ class MethodDPData(MethodData):
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
 
     penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
-    penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
-    torque: Decimal | None = Field(None, alias="V", description="Torque (kNm)")
-    ramming: Decimal = Field(None, alias="S", description="Ramming (Blow/0.2 m)")
+    penetration_rate: Decimal | None = Field(
+        None,
+        validation_alias=AliasChoices(
+            "B",  # mm/s
+            "C",  # s/0.2m
+        ),
+        description="Penetration rate (mm/s)",
+    )
+    torque: Decimal | None = Field(
+        None,
+        validation_alias=AliasChoices(
+            "V",  # kNm
+            "AB",  # Nm
+        ),
+        description="Torque (kNm)",
+    )
+    ramming: Decimal = Field(None, validation_alias=AliasChoices("S", "SA"), description="Ramming (Blow/0.2 m)")
     rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
     increased_rotation_rate: bool | None = Field(None, alias="AQ")
 
@@ -39,10 +53,11 @@ class MethodDP(Method):
 
     type: DPType
 
-    # Inherited from Method
-    # predrilling_depth: Decimal = Field(Decimal("0"), alias="HO")
+    predrilling_depth: Decimal = Field(Decimal("0"), alias="HO")
 
-    cone_type: str | None = Field(None, alias="KonTyp", description="Type of cone used.")
+    cone_type: str | None = Field(
+        None, validation_alias=AliasChoices("KonTyp", "HN", "HC"), description="Type of cone used."
+    )
     cushion_type: str | None = Field(None, alias="DynTyp", description="Type of impact cushion used.")
     use_damper: bool | None = Field(None, alias="Gummi", description="Use of damper.")
 

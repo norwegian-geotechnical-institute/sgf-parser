@@ -1,0 +1,24 @@
+# This .gitattributes file primarily made for the test files. Some test files are deliberatly constructed with wrong
+# line endings for test purposes and should be specified here.
+
+# Don't let git modify these:
+*.[Cc][Pp][Tt] binary
+*.[Dd][Tt][Rr] binary
+*.[Hh][Ff][Aa] binary
+*.[Jj][Bb][123Tt] binary
+*.[Vv][Ii][Mm] binary
+*.[Ss][Tt][Dd] binary
+*.[Tt][Oo][Tt] binary
+
+# std, cpt, tot and dtr files are specified as eol=crlf
+*.[Cc][Pp][Tt] text eol=crlf
+*.[Dd][Tt][Rr] text eol=crlf
+*.[Ss][Tt][Dd] text eol=crlf
+*.[Tt][Oo][Tt] text eol=crlf
+
+# Shell scripts may not contain crlf
+*.sh -crlf
+
+# Yaml file should not contain crlf
+*.yaml -crlf
+*.yml  -crlf

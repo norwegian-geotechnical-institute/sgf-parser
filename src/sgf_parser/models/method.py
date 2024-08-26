@@ -83,6 +83,52 @@ class MethodData(BaseModel, abc.ABC):
     comment_code: int | None = Field(None, alias="K")
     remarks: str | None = Field(None, alias="T")
 
+    @model_validator(mode="before")
+    @classmethod
+    def penetration_rate_validator(cls, data: Any) -> Any:
+        """
+        If the penetration rate (B mm/s) is not set, but C is (s/0.2m) then convert C to B and set B.
+        """
+        if isinstance(data, dict):
+            if ("B" not in data or data["B"] is None) and "C" in data and data["C"] is not None:
+                # B is not set, but C is, convert C to B
+                try:
+                    data["B"] = 200 / float(data["C"])
+                except (ZeroDivisionError, ValueError):
+                    data["B"] = None
+
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def torque_validator(cls, data: Any) -> Any:
+        """
+        If the torque V (kNm) is not set, but AB is (Nm) then convert AB to V and set V.
+        """
+        if isinstance(data, dict):
+            if ("V" not in data or data["V"] is None) and "AB" in data and data["AB"] is not None:
+                try:
+                    data["V"] = float(data["AB"]) / 1000
+                except ValueError:
+                    data["V"] = None
+
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def ramming_validator(cls, data: Any) -> Any:
+        """
+        If the ramming S (blows/0.2m) is not set, but SA is (blows/0.1m) then convert SA to S and set S.
+        """
+        if isinstance(data, dict):
+            if ("S" not in data or data["S"] is None) and "SA" in data and data["SA"] is not None:
+                try:
+                    data["S"] = float(data["SA"]) * 2
+                except ValueError:
+                    data["S"] = None
+
+        return data
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.depth}>"
 
