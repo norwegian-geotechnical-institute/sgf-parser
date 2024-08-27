@@ -134,3 +134,16 @@ class Operation(enum.StrEnum):
 
     MANUAL = "MANUAL"
     MECHANICAL = "MECHANICAL"
+
+
+class DPType(enum.StrEnum):
+    """
+    DP Type (Dynamic Probing)
+
+    """
+
+    DPSH_A = "DPSH-A"
+    DPL = "DPL"
+    DPM = "DPM"
+    DPH = "DPH"
+    DPSH_B = "DPSH-B"

@@ -14,6 +14,7 @@ from sgf_parser.models.types import FlushingVariant, HammeringVariant, RotationV
 class MethodData(BaseModel, abc.ABC):
     @classmethod
     def _fix_malformed_data(cls, code: str) -> str | None:
+        """Wrong K codes as "4,0" will be converted to "40"."""
         return re.sub("[^0-9]", "", code)
 
     @classmethod
@@ -53,20 +54,19 @@ class MethodData(BaseModel, abc.ABC):
         """
         if isinstance(data, dict):
             if "K" in data and data["K"] is not None:
-                
                 # We want to interpret K as a stop code (with integer value)
                 # sometimes K is a string with e.g. "SAND", in that case we move it to T
                 K_is_digit = any(char.isdigit() for char in data["K"])
-                
+
                 if not K_is_digit:
                     # move it to T (remarks column)
                     if "T" not in data:
                         data["T"] = data["K"]
                     else:
                         data["T"] = f"{data['K']}, {data['T']}"
-                    
+
                     del data["K"]
-                
+
                 else:
                     # we identify the most important stop code, and move the rest to T
                     _code, _rest = cls._extract_comment_code(data)
@@ -82,6 +82,52 @@ class MethodData(BaseModel, abc.ABC):
     # "K": "comment_code",  # "comment_code"
     comment_code: int | None = Field(None, alias="K")
     remarks: str | None = Field(None, alias="T")
+
+    @model_validator(mode="before")
+    @classmethod
+    def penetration_rate_validator(cls, data: Any) -> Any:
+        """
+        If the penetration rate (B mm/s) is not set, but C is (s/0.2m) then convert C to B and set B.
+        """
+        if isinstance(data, dict):
+            if ("B" not in data or data["B"] is None) and "C" in data and data["C"] is not None:
+                # B is not set, but C is, convert C to B
+                try:
+                    data["B"] = 200 / float(data["C"])
+                except (ZeroDivisionError, ValueError):
+                    data["B"] = None
+
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def torque_validator(cls, data: Any) -> Any:
+        """
+        If the torque V (kNm) is not set, but AB is (Nm) then convert AB to V and set V.
+        """
+        if isinstance(data, dict):
+            if ("V" not in data or data["V"] is None) and "AB" in data and data["AB"] is not None:
+                try:
+                    data["V"] = float(data["AB"]) / 1000
+                except ValueError:
+                    data["V"] = None
+
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def ramming_validator(cls, data: Any) -> Any:
+        """
+        If the ramming S (blows/0.2m) is not set, but SA is (blows/0.1m) then convert SA to S and set S.
+        """
+        if isinstance(data, dict):
+            if ("S" not in data or data["S"] is None) and "SA" in data and data["SA"] is not None:
+                try:
+                    data["S"] = float(data["SA"]) * 2
+                except ValueError:
+                    data["S"] = None
+
+        return data
 
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.depth}>"

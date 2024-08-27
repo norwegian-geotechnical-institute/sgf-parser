@@ -11,7 +11,7 @@ from sgf_parser.models import ParseState
 # to contain only a-z and A-Z. In addition, the Geotech AB extension,
 # have date fields (key "%") with no "=" separating the key from the
 # value...
-_RE_FIELD_SEP = re.compile(r",(?:(?=[a-zA-Z])|(?=%))")
+_RE_FIELD_SEP = re.compile(r",(?=[a-zA-Z%])")
 
 
 class Parser:
@@ -26,6 +26,12 @@ class Parser:
         "102": models.MethodWST,
         "107A": models.MethodCPT,
         "107B": models.MethodCPT,
+        "8": models.MethodDP,
+        "108A": models.MethodDP,
+        "108B": models.MethodDP,
+        "108C": models.MethodDP,
+        "108D": models.MethodDP,
+        "108E": models.MethodDP,
         "23": models.MethodRP,
         "24": models.MethodTOT,
         "12": models.MethodSRS,

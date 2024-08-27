@@ -243,11 +243,9 @@ class TestParse:
 
         for row in method.method_data:
             if row.depth in data_rows:
-                print(f"===> depth={row.depth}")
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
     # fmt: off
     @pytest.mark.parametrize(
@@ -291,15 +289,11 @@ class TestParse:
 
         for row in method.method_data:
             if row.depth in data_rows:
-                print(f"===> depth={row.depth}")
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, sounding_class, number_of_data_rows, stop_code, depth_top, depth_base, "
         "depth_in_soil, depth_in_rock, bedrock_elevation, "
@@ -389,14 +383,11 @@ class TestParse:
 
         for row in method.method_data:
             if row.depth in data_rows:
-                print(f"===> depth={row.depth}")
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, number_of_data_rows, depth_top, depth_base, "
         "conducted_at, data_rows",
@@ -435,18 +426,17 @@ class TestParse:
 
         for row in method.method_data:
             if row.depth in data_rows:
-                print(f"===> depth={row.depth}")
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-                    print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name",
         ("tests/data/dt-test-1.std",
         ) 
     )
-
+    # fmt: on
     def test_placeholder_dissipation_test(
             self, file_name
     ):
@@ -455,11 +445,12 @@ class TestParse:
         
         assert methods
 
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name",
         ("tests/data/cpt-dt-test-1.std",) 
     )
-
+    # fmt: on
     def test_return_one_method_one_placeholder(
             self, file_name
     ):
@@ -468,9 +459,7 @@ class TestParse:
         
         assert len(methods) == 2
 
-
-
-
+    # fmt: off
     @pytest.mark.parametrize(
         "file_name, number_of_data_rows, depth_top, depth_base, "
         "conducted_at, data_rows",
@@ -511,9 +500,143 @@ class TestParse:
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
                     # print(f"{key}: {getattr(row, key)} == {data_rows[row.depth][key]}")
 
-def test_parse_file_with_text_in_K_code():
-        file_name = "tests/data/tot-test-9.TOT"
-        with open(file_name, "r", encoding="utf-8") as file:
+
+
+    # fmt: off
+    @pytest.mark.parametrize(
+        "file_name, number_of_data_rows,stop_code, predrilling_depth, depth_top, depth_base, "
+        "conducted_at, data_rows",
+        (
+(
+    "tests/data/dp-test-1.hfa", 194, 93, 2, Decimal("2.025"), Decimal("6.850"),
+    datetime(2023, 9, 7, 11, 48,17),
+    {
+        # penetration_force=A, penetration rate=B, torque=V, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+        Decimal("2.025"): {"comment_code": None, "remarks": None, "penetration_force":Decimal("1.002"), "penetration_rate": Decimal("438.805"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("2.350"): {"penetration_force":Decimal("1.093"), "penetration_rate": Decimal("56.87"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("3.000"): {"remarks": "1,0 Nm", "penetration_force":Decimal("0.274"), "penetration_rate": Decimal("11.569"), "torque":Decimal("0"), "ramming":Decimal("8"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("3.375"): {"penetration_force":Decimal("0.144"), "penetration_rate": Decimal("7.079"), "torque":Decimal("0"), "ramming":Decimal("16"), "rotation_rate":Decimal("0"), "increased_rotation_rate": False},
+        Decimal("6.825"): {"comment_code": 40, "remarks": "Nm", "penetration_force": Decimal("0.638"),
+                           "penetration_rate": Decimal("0.101"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                           "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+        Decimal("6.850"): {"comment_code": 93, "remarks": "Stopp mot sten", "penetration_force": Decimal("0.391"),
+                           "penetration_rate": Decimal("0.050"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                           "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+
+    },
+),
+(
+        "tests/data/dp-test-2.hfa", 287, 90, 0, Decimal("0.025"), Decimal("7.175"),
+        datetime(2014, 1, 15, 0, 8, 40),
+        {
+            # penetration_force=A, penetration rate=B, torque=V, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+            Decimal("0.025"): {"comment_code": None, "remarks": None, "penetration_force": Decimal("0.600"),
+                               "penetration_rate": Decimal("8.486"), "torque": Decimal("0"), "ramming": Decimal("8"),
+                               "rotation_rate": None, "increased_rotation_rate": False},
+            Decimal("2.350"): {"penetration_force": Decimal("0.380"), "penetration_rate": Decimal("5.985"),
+                               "torque": Decimal("0"), "ramming": Decimal("16"), "rotation_rate": None,
+                               "increased_rotation_rate": False},
+            Decimal("7.175"): {"comment_code": 90, "remarks": "Sondering avbruten utan stopp, 215 Nm", 
+                               "penetration_force": Decimal("0.070"),
+                               "penetration_rate": Decimal("0.132"), "torque": Decimal("0"), "ramming": Decimal("56"),
+                               "rotation_rate": None, "increased_rotation_rate": True},
+
+        },
+),
+(
+        "tests/data/dp-test-3.hfa", 348, 94, 0, Decimal("0.025"), Decimal("8.70"),
+        datetime(2014, 1, 14, 0, 15, 6),
+        {
+            # penetration_force=A, penetration rate=B, torque=V, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+            Decimal("2.025"): {"comment_code": None, "remarks": "5 Nm", "penetration_force": Decimal("0.249"),
+                               "penetration_rate": Decimal("2.464"), "torque": Decimal("0"), "ramming": Decimal("32"),
+                               "rotation_rate": None, "increased_rotation_rate": False},
+            Decimal("2.350"): {"penetration_force": Decimal("0.279"), "penetration_rate": Decimal("7.001"),
+                               "torque": Decimal("0"), "ramming": Decimal("16"), "rotation_rate": None,
+                               "increased_rotation_rate": False},
+            Decimal("2.550"): {"remarks": None, "penetration_force": Decimal("-0.161"),
+                               "penetration_rate": Decimal("8.282"), "torque": Decimal("0"), "ramming": Decimal("8"),
+                               "rotation_rate": None, "increased_rotation_rate": False},
+            Decimal("8.700"): {"comment_code": 94, "remarks": "Förmodligen berg, 160 Nm", 
+                               "penetration_force": Decimal("0.219"),
+                               "penetration_rate": Decimal("0.286"), "torque": Decimal("0"), "ramming": Decimal("200"),
+                               "rotation_rate": None, "increased_rotation_rate": True},
+        },
+),
+(
+        "tests/data/dp-test-4.hfa", 416, 94, 0, Decimal("0.025"), Decimal("10.4"),
+        datetime(2014, 1, 14, 3, 43, 39),
+        {
+            # penetration_force=A, penetration rate=B, torque=V, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+            Decimal("2.025"): {"comment_code": None, "remarks": None, "penetration_force": Decimal("0.847"),
+                               "penetration_rate": Decimal("3.413"), "torque": Decimal("0"), "ramming": Decimal("24"),
+                               "rotation_rate": None, "increased_rotation_rate": False},
+            Decimal("10.4"): {"comment_code": 94, "remarks": "Förmodligen berg, 45 Nm", 
+                              "penetration_force": Decimal("0.187"),
+                               "penetration_rate": Decimal("0.322"), "torque": Decimal("0"), "ramming": Decimal("256"),
+                               "rotation_rate": None, "increased_rotation_rate": False},
+
+        },
+),
+(
+        #
+        # This is a manually modified test file to check conversion of alternative data block codes (B and C, V and AB)
+        #
+        "tests/data/dp-test-modified-2.hfa", 6, 93, 2, Decimal("2.025"), Decimal("6.850"),
+        datetime(2023, 9, 7, 11, 48, 17),
+        {
+            # penetration_force=A, penetration rate=B, torque=V | AB, ramming=S, rotation_rate=R, increased_rotation_rate=AQ
+            Decimal("2.025"): {"comment_code": None, "remarks": None, "penetration_force": Decimal("1.002"),
+                               "penetration_rate": Decimal("434.782"), "torque": Decimal("0.001"), "ramming": Decimal("8"),
+                               "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+            Decimal("2.350"): {"penetration_force": Decimal("1.093"), "penetration_rate": Decimal("56.87"),
+                               "torque": Decimal("0.001"), "ramming": Decimal("8"), "rotation_rate": Decimal("0"),
+                               "increased_rotation_rate": False},
+            Decimal("3.000"): {"remarks": "1,0 Nm", "penetration_force": Decimal("0.274"),
+                               "penetration_rate": Decimal("11.569"), "torque": Decimal("0"), "ramming": Decimal("8"),
+                               "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+            Decimal("3.375"): {"penetration_force": Decimal("0.144"), "penetration_rate": Decimal("7.079"),
+                               "torque": Decimal("0"), "ramming": Decimal("16"), "rotation_rate": Decimal("0"),
+                               "increased_rotation_rate": False},
+            Decimal("6.825"): {"comment_code": 40, "remarks": "Nm", "penetration_force": Decimal("0.638"),
+                               "penetration_rate": Decimal("0.1012"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                               "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+            Decimal("6.850"): {"comment_code": 93, "remarks": "Stopp mot sten", "penetration_force": Decimal("0.391"),
+                               "penetration_rate": Decimal("0.0496"), "torque": Decimal("0"), "ramming": Decimal("800"),
+                               "rotation_rate": Decimal("0"), "increased_rotation_rate": False},
+
+        },
+),
+        ),
+    )
+    # fmt: on
+    def test_parse_dp(
+            self, file_name, number_of_data_rows, stop_code, predrilling_depth, depth_top, depth_base,
+            conducted_at, data_rows
+    ):
+        with open(file_name, "r", encoding="cp1250") as file:
             [method] = Parser().parse(file)
 
-        assert method
+        method.point_z = point_z
+
+        assert method.method_type == models.MethodType.DP
+        assert len(method.method_data) == number_of_data_rows
+        assert method.stopcode == stop_code
+        assert method.predrilling_depth == predrilling_depth
+        assert method.depth_top == pytest.approx(depth_top)
+        assert method.depth_base == pytest.approx(depth_base)
+        assert method.conducted_at == conducted_at
+
+        for row in method.method_data:
+            if row.depth in data_rows:
+                for key in data_rows[row.depth]:
+                    assert getattr(row, key) == pytest.approx(
+                        data_rows[row.depth][key], rel=Decimal(1e-3)), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+
+
+def test_parse_file_with_text_in_K_code():
+    file_name = "tests/data/tot-test-9.TOT"
+    with open(file_name, "r", encoding="utf-8") as file:
+        [method] = Parser().parse(file)
+
+    assert method
