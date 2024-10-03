@@ -88,6 +88,7 @@ class MethodDP(Method):
                     "108B": DPType.DPL,
                     "108C": DPType.DPM,
                     "108D": DPType.DPH,
+                    "9": DPType.DPSH_B,
                     "108E": DPType.DPSH_B,
                 }[data["HM"]]
 

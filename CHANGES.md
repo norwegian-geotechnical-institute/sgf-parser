@@ -4,7 +4,7 @@ _2024-10-03_
 
 Version 0.0.1
 
-Add support for non-standard SGF codes for SRS/Jb2 71 and SRS/Jb3 72.
+Add support for non-standard SGF codes for SRS/Jb2 71, SRS/Jb3 72 and DPSH_B 9.
 
 _2024-08-22_
 
