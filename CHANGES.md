@@ -4,7 +4,7 @@ _2024-10-03_
 
 Version 0.0.1
 
-Add support for non-standard SGF codes for SRS/Jb2 71, SRS/Jb3 72 and DPSH_B 9.
+Add support for non-standard SGF codes for SRS/Jb2 71, SRS/Jb3 72 and DP SH B 9.
 
 _2024-08-22_
 
@@ -16,7 +16,8 @@ _2024-08-08_
 
 Version 0.0.1b4
 
-Fix edge case where strings are given in the "K" code, e.g. "K=SAND". These are not moved to the "T"/remarks column, as "K" is reserved for (integer) comment codes.
+Fix an edge case where strings are given in the "K" code, e.g. "K=SAND". 
+These are not moved to the "T"/remarks column, as "K" is reserved for (integer) comment codes.
 
 _2024-08-06_
 
