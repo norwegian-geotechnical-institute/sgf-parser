@@ -14,8 +14,8 @@ class MethodSRSData(MethodData):
     Sounding classes:
 
         12 (Jb-1)
-        41 (Jb-2)
-        42 (Jb-3)
+        41 71 (Jb-2)
+        42 72 (Jb-3)
         73 (Jb-tot)
 
     """
@@ -83,7 +83,9 @@ class MethodSRS(Method):
                 data["sounding_class"] = {
                     "12": SoundingClass.JB1,
                     "41": SoundingClass.JB2,
+                    "71": SoundingClass.JB2,
                     "42": SoundingClass.JB3,
+                    "72": SoundingClass.JB3,
                     "73": SoundingClass.JBTOT,
                 }[data["HM"]]
 
