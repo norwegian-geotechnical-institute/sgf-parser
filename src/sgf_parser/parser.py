@@ -20,26 +20,29 @@ class Parser:
     """
 
     method_code_class_mapping = {
-        "7": models.MethodCPT,
         "07": models.MethodCPT,
         "101": models.MethodWST,
         "102": models.MethodWST,
         "107A": models.MethodCPT,
         "107B": models.MethodCPT,
-        "8": models.MethodDP,
         "108A": models.MethodDP,
         "108B": models.MethodDP,
         "108C": models.MethodDP,
         "108D": models.MethodDP,
         "108E": models.MethodDP,
+        "12": models.MethodSRS,
+        "13": models.MethodSVT,
         "23": models.MethodRP,
         "24": models.MethodTOT,
-        "12": models.MethodSRS,
+        "35": models.MethodDT,
         "41": models.MethodSRS,
         "42": models.MethodSRS,
+        "7": models.MethodCPT,
+        "71": models.MethodSRS,
+        "72": models.MethodSRS,
         "73": models.MethodSRS,
-        "13": models.MethodSVT,
-        "35": models.MethodDT,
+        "8": models.MethodDP,
+        "9": models.MethodDP,
     }
 
     def parse(self, file: TextIO) -> list[Method]:

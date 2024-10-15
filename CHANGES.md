@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2024-10-15_
+
+Version 0.0.2
+
+Fix missing handling of non-standard method codes 9, 71 and 72.
+
 _2024-10-03_
 
 Version 0.0.1
