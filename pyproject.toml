@@ -15,7 +15,7 @@ exclude = '''
 
 [tool.poetry]
 name = "sgf-parser"
-version = "0.0.2"
+version = "0.0.3"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 license = "MIT"
 authors = ["Jostein Leira <jostein@leira.net>"]
@@ -24,9 +24,9 @@ readme = "README.md"
 homepage = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
 repository = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
 classifiers = [
-#    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 5 - Production/Stable",
 #    "Development Status :: 4 - Beta",
-    "Development Status :: 3 - Alpha",
+#    "Development Status :: 3 - Alpha",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: GIS",
@@ -58,7 +58,7 @@ no_implicit_reexport = false
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4"
-pydantic = "^2.8.2"
+pydantic = "^2.10"
 python-dateutil = "^2.9.0.post0"
 types-python-dateutil = "^2.9"
 

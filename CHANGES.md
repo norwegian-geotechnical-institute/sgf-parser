@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2025-02-17_
+
+Version 0.0.3
+
+Add support for the methods Pressure Sounding (Tr), Impact sounding (Slb) and Light sounding (Sti).
+
 _2024-10-15_
 
 Version 0.0.2
