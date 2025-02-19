@@ -9,6 +9,7 @@
 *.[Vv][Ii][Mm] binary
 *.[Ss][Tt][Dd] binary
 *.[Tt][Oo][Tt] binary
+*.[Tt][Rr][Tt] binary
 
 # std, cpt, tot and dtr files are specified as eol=crlf
 *.[Cc][Pp][Tt] text eol=crlf

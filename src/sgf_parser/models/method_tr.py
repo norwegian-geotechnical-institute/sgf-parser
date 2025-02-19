@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field, computed_field
+from pydantic import Field
 
 from sgf_parser.models import MethodType, MethodData, Method
 
@@ -35,19 +35,3 @@ class MethodTr(Method):
     method_data_type: type[MethodTrData] = MethodTrData
 
     method_data: list[MethodTrData] = []
-
-    @computed_field
-    def stopcode(self) -> int | None:
-        if not self.method_data:
-            return None
-
-        return self.method_data[-1].comment_code
-
-    def post_processing(self):
-        """
-        Post-processing
-
-        """
-
-        if not self.method_data:
-            return

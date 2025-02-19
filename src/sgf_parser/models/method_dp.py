@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, Any
 
-from pydantic import Field, model_validator, computed_field, AliasChoices
+from pydantic import Field, model_validator, AliasChoices
 
 from sgf_parser.models import MethodData, Method, MethodType
 from sgf_parser.models.types import DPType
@@ -63,20 +63,6 @@ class MethodDP(Method):
 
     method_data: list[MethodDPData] = []
 
-    @computed_field
-    def depth_top(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return min(method_data.depth for method_data in self.method_data)
-
-    @computed_field
-    def depth_base(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return max(method_data.depth for method_data in self.method_data)
-
     @model_validator(mode="before")
     @classmethod
     def set_operation(cls, data: Any) -> Any:
@@ -93,10 +79,3 @@ class MethodDP(Method):
                 }[data["HM"]]
 
         return data
-
-    @computed_field
-    def stopcode(self) -> int | None:
-        if not self.method_data:
-            return None
-
-        return self.method_data[-1].comment_code
