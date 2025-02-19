@@ -61,10 +61,3 @@ def test_parse_tr(
     assert method.depth_top == pytest.approx(depth_top)
     assert method.depth_base == pytest.approx(depth_base)
     assert method.conducted_at == conducted_at
-    #
-    # for row in method.method_data:
-    #     if row.depth in data_rows:
-    #         for key in data_rows[row.depth]:
-    #             assert getattr(row, key) == pytest.approx(data_rows[row.depth][key], rel=Decimal(1e-3)), (
-    #                 f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
-    #             )
