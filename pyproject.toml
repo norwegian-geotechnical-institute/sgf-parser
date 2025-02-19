@@ -71,8 +71,6 @@ bandit = "*"
 safety = "*"
 pip-licenses = "*"
 ruff = "*"
-# Pinned due to problem with unpinned ruamel-yaml subdependency ruamel-yaml-clib not able to install on windows
-ruamel-yaml-clib={platform = "win32", version = "<0.2.6"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
