@@ -6,7 +6,7 @@ from pydantic import Field
 from sgf_parser.models import MethodType, MethodData, Method
 
 
-class MethodTrData(MethodData):
+class MethodTRData(MethodData):
     """
     Method Pressure Sounding Data (Swedish "Trycksondering")
     """
@@ -22,7 +22,7 @@ class MethodTrData(MethodData):
     increased_rotation_rate: bool | None = Field(None, alias="AQ")
 
 
-class MethodTr(Method):
+class MethodTR(Method):
     """
     Method Pressure Sounding (Swedish "Trycksondering")
     """
@@ -32,6 +32,6 @@ class MethodTr(Method):
 
     name: str = "Tr"
     method_type: Literal[MethodType.TR] = MethodType.TR
-    method_data_type: type[MethodTrData] = MethodTrData
+    method_data_type: type[MethodTRData] = MethodTRData
 
-    method_data: list[MethodTrData] = []
+    method_data: list[MethodTRData] = []

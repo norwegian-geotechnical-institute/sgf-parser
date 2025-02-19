@@ -1,12 +1,12 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field, computed_field
+from pydantic import Field
 
 from sgf_parser.models import MethodType, MethodData, Method
 
 
-class MethodSlbData(MethodData):
+class MethodSLBData(MethodData):
     """
     Method Impact sounding Data (Swedish "Slagsondering")
     """
@@ -18,9 +18,9 @@ class MethodSlbData(MethodData):
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
 
 
-class MethodSlb(Method):
+class MethodSLB(Method):
     """
-    Method  Impact sounding (Swedish "Slagsondering")
+    Method Impact sounding (Swedish "Slagsondering")
     """
 
     def __init__(self, **kwargs):
@@ -28,22 +28,6 @@ class MethodSlb(Method):
 
     name: str = "Slb"
     method_type: Literal[MethodType.SLB] = MethodType.SLB
-    method_data_type: type[MethodSlbData] = MethodSlbData
+    method_data_type: type[MethodSLBData] = MethodSLBData
 
-    method_data: list[MethodSlbData] = []
-
-    @computed_field
-    def stopcode(self) -> int | None:
-        if not self.method_data:
-            return None
-
-        return self.method_data[-1].comment_code
-
-    def post_processing(self):
-        """
-        Post-processing
-
-        """
-
-        if not self.method_data:
-            return
+    method_data: list[MethodSLBData] = []
