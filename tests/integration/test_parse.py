@@ -301,12 +301,12 @@ class TestParse:
         (
 (
     "tests/data/srs-test-1.jb3", SoundingClass.JB3, 664, 95, Decimal("0.025"), Decimal("16.6"),
-    Decimal("16.6"), None, Decimal(point_z - 16.6),  # TODO: Is bedrock elevation correct K=95, 
+    Decimal("16.6"), None, Decimal(point_z - 16.6),  # TODO: Is bedrock elevation correct K=95,
                                                      #       without bedrock indication
     datetime(2023, 3, 23, 17, 33, 1),
     {
         # D=0.025,A=0.043,W=0.043,AK=174217,AKZ=5028,H=8,B=7.2,C=27.7,V=0.000,AB=0,S=0,SM=0,AP=0,R=7,AQ=0,P=0.046,PR=0.000,I=0.908,AZ=0.000,J=6.822,VB=0.2,AD=4
-        Decimal("0.025"): {"penetration_force": Decimal("0.043"), "penetration_rate": Decimal('7.2'), 
+        Decimal("0.025"): {"penetration_force": Decimal("0.043"), "penetration_rate": Decimal('7.2'),
                            "torque": Decimal('0'), "rotation_rate": Decimal('7'), "increased_rotation_rate": False,
                            "flushing_pressure": Decimal("0.908"), "flushing_flow": Decimal("6.822"), "flushing": True,
                            "hammering": False, "comment_code": None, "remarks": None},
@@ -357,7 +357,38 @@ class TestParse:
         Decimal("22.2"): {"comment_code": 95, "remarks": "(JB) avbruten", "increased_rotation_rate": True},
     },
 ),
-         ),
+(
+        "tests/data/srs-test-4.jb2", SoundingClass.JB2, 221, 94, Decimal("0.025"), Decimal("5.525"),
+        Decimal("5.525"), 0, Decimal(point_z) - Decimal("5.525"),
+        datetime(2023, 7, 27, 15, 1, 41),
+        {
+            Decimal("0.025"): {"comment_code": None, "remarks": None, "flushing": False,
+                               "increased_rotation_rate": True, "penetration_rate": Decimal('9.013'),
+                               "rotation_rate": Decimal('90')},
+            Decimal("4.250"): {"comment_code": None,
+                                "remarks":None,
+                                "increased_rotation_rate": True},
+            Decimal("22.2"): {"comment_code": 94, "remarks": "Stopp mot förmodat berg", "increased_rotation_rate": False},
+        },
+),
+(
+        "tests/data/srs-test-5.jb3", SoundingClass.JB3, 664, 95, Decimal("0.025"), Decimal("16.6"),
+        Decimal("16.6"), None, Decimal(point_z) - Decimal("16.6"),
+        datetime(2023, 3, 23, 17, 33, 1),
+        {
+            Decimal("0.025"): {"comment_code": None, "remarks": None, "flushing": True,
+                               "increased_rotation_rate": False, "penetration_rate": Decimal('7.2'),
+                               "rotation_rate": Decimal('7')},
+            Decimal("4.250"): {"comment_code": None,
+                               "remarks": None, "flushing": True,
+                               "increased_rotation_rate": True, "rotation_rate": Decimal('68'),
+                               "penetration_rate": Decimal('145.2'),},
+            Decimal("16.6"): {"comment_code": 95, "flushing": True, "remarks": "(JB) avbruten",
+                              "increased_rotation_rate": False, "penetration_rate": Decimal('4.1'),
+                              "rotation_rate": Decimal('0')},
+        },
+),
+        ),
     )
     # fmt: on
     def test_parse_srs(
@@ -385,7 +416,7 @@ class TestParse:
             if row.depth in data_rows:
                 for key in data_rows[row.depth]:
                     assert getattr(row, key) == pytest.approx(
-                        data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
+                        data_rows[row.depth][key]), f"depth {row.depth} {key} {getattr(row, key)} != {data_rows[row.depth][key]}"
 
     # fmt: off
     @pytest.mark.parametrize(
