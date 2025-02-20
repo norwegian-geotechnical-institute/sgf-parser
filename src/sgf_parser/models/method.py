@@ -4,7 +4,7 @@ from datetime import datetime, time
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, Field, AliasChoices, model_validator
+from pydantic import BaseModel, Field, AliasChoices, model_validator, computed_field
 
 from sgf_parser.datetime_parser import convert_str_to_datetime, convert_str_to_time
 from sgf_parser.models import MethodType
@@ -393,6 +393,27 @@ class Method(BaseModel):
                 data["HD"] = datetime.combine(data["HD"], data["HI"])
 
         return data
+
+    @computed_field
+    def depth_top(self) -> Decimal | None:
+        if not self.method_data:
+            return None
+
+        return min(method_data.depth for method_data in self.method_data)
+
+    @computed_field
+    def depth_base(self) -> Decimal | None:
+        if not self.method_data:
+            return None
+
+        return max(method_data.depth for method_data in self.method_data)
+
+    @computed_field
+    def stopcode(self) -> int | None:
+        if not self.method_data:
+            return None
+
+        return self.method_data[-1].comment_code
 
     method_type: MethodType
     method_data_type: type[MethodData]

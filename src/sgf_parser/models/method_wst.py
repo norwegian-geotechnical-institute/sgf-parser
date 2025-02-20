@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, Any
 
-from pydantic import Field, model_validator, computed_field
+from pydantic import Field, model_validator
 
 from sgf_parser.models import MethodData, Method, MethodType
 from sgf_parser.models.types import Operation
@@ -39,20 +39,6 @@ class MethodWST(Method):
     operation: Operation = Operation.MECHANICAL
 
     method_data: list[MethodWSTData] = []
-
-    @computed_field
-    def depth_top(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return min(method_data.depth for method_data in self.method_data)
-
-    @computed_field
-    def depth_base(self) -> Decimal | None:
-        if not self.method_data:
-            return None
-
-        return max(method_data.depth for method_data in self.method_data)
 
     @model_validator(mode="before")
     @classmethod

@@ -21,6 +21,7 @@ class Parser:
 
     method_code_class_mapping = {
         "07": models.MethodCPT,
+        "10": models.MethodSLB,
         "101": models.MethodWST,
         "102": models.MethodWST,
         "107A": models.MethodCPT,
@@ -30,10 +31,12 @@ class Parser:
         "108C": models.MethodDP,
         "108D": models.MethodDP,
         "108E": models.MethodDP,
+        "11": models.MethodSTI,
         "12": models.MethodSRS,
         "13": models.MethodSVT,
         "23": models.MethodRP,
         "24": models.MethodTOT,
+        "3": models.MethodTR,
         "35": models.MethodDT,
         "41": models.MethodSRS,
         "42": models.MethodSRS,

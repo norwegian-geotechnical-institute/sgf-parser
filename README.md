@@ -51,7 +51,7 @@ len(method.method_data)
 1. Software dependencies
 
    - Python 3.11 or higher
-   - Poetry
+   - Poetry 2
    - ruff code formatter
 
 2. Clone this repository
