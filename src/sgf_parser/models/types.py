@@ -121,10 +121,10 @@ class SoundingClass(enum.StrEnum):
     )
     """
 
-    JB1 = "Jb-1"
-    JB2 = "Jb-2"
-    JB3 = "Jb-3"
-    JBTOT = "Jb-tot"
+    JB1 = "JB1"
+    JB2 = "JB2"
+    JB3 = "JB3"
+    JBTOT = "JBTOT"
 
 
 class Operation(enum.StrEnum):
@@ -142,8 +142,8 @@ class DPType(enum.StrEnum):
 
     """
 
-    DPSH_A = "DPSH-A"
+    DPSHA = "DPSHA"
     DPL = "DPL"
     DPM = "DPM"
     DPH = "DPH"
-    DPSH_B = "DPSH-B"
+    DPSHB = "DPSHB"

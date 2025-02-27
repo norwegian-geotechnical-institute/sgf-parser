@@ -69,13 +69,13 @@ class MethodDP(Method):
         if isinstance(data, dict):
             if "HM" in data and data["HM"] is not None:
                 data["type"] = {
-                    "8": DPType.DPSH_A,
-                    "108A": DPType.DPSH_A,
+                    "8": DPType.DPSHA,
+                    "108A": DPType.DPSHA,
                     "108B": DPType.DPL,
                     "108C": DPType.DPM,
                     "108D": DPType.DPH,
-                    "9": DPType.DPSH_B,
-                    "108E": DPType.DPSH_B,
+                    "9": DPType.DPSHB,
+                    "108E": DPType.DPSHB,
                 }[data["HM"]]
 
         return data
