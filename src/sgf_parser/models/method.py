@@ -422,6 +422,7 @@ class Method(BaseModel):
 
     location_name: str | None = Field(None, alias="KP")
     project_number: str | None = Field(None, alias="HJ")
+    borehole_name: str | None = Field(None, alias="HK", description="Investigation point/Borehole name")
     method_type_string: str | None = Field(None, alias="HM")
 
     # HX, HY, HZ

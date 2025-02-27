@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+_2025-02-27_
+
+Version 0.0.4
+
+- Add `borehole_name` to methods.
+- Change the values of the SoundingClass and DPType.
+
 _2025-02-17_
 
 Version 0.0.3
