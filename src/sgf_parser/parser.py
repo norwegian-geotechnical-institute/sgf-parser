@@ -20,6 +20,7 @@ class Parser:
     """
 
     method_code_class_mapping = {
+        "2": models.MethodWST,
         "07": models.MethodCPT,
         "10": models.MethodSLB,
         "101": models.MethodWST,

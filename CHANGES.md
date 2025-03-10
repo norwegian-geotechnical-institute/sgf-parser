@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+_2025-03-10_
+
+Version 0.0.5
+
+- Add support for old WST code (2).
+- Rename Dynamic Probing (DP) type from `type` to `dynamic_probing_type`.
+
 _2025-02-27_
 
 Version 0.0.4

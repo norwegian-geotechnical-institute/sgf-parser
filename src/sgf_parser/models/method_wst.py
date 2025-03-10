@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, Any
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_validator, AliasChoices
 
 from sgf_parser.models import MethodData, Method, MethodType
 from sgf_parser.models.types import Operation
@@ -17,7 +17,7 @@ class MethodWSTData(MethodData):
 
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
     turning: Decimal = Field(..., alias="H", description="Turning (half revolution/0.2 m)")
-    load: Decimal = Field(..., alias="W", description="Load (kN)")
+    load: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
 
     hammering: bool | None = Field(None, alias="AP")
@@ -47,6 +47,7 @@ class MethodWST(Method):
             if "HM" in data and data["HM"] is not None:
                 data["operation"] = {
                     "101": Operation.MANUAL,
+                    "2": Operation.MECHANICAL,
                     "102": Operation.MECHANICAL,
                 }[data["HM"]]
 
