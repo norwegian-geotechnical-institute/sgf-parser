@@ -15,7 +15,7 @@ exclude = '''
 
 [tool.poetry]
 name = "sgf-parser"
-version = "0.0.4"
+version = "0.0.5"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 license = "MIT"
 authors = ["Jostein Leira <jostein@leira.net>"]
