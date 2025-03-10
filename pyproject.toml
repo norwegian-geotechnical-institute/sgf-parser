@@ -24,8 +24,7 @@ maintainers = [
      { name = "Jostein Leira", email = "jostein@leira.net" }
 ]
 readme = "README.md"
-homepage = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
-repository = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
+
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Operating System :: OS Independent",
@@ -42,6 +41,11 @@ dependencies=[
 packages = [
     { include = "sgf_parser", from="src" },
 ]
+
+
+[project.urls]
+homepage = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
+repository = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
 
 
 [tool.ruff]
