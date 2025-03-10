@@ -51,7 +51,7 @@ class MethodDP(Method):
     method_type: Literal[MethodType.DP] = MethodType.DP
     method_data_type: type[MethodDPData] = MethodDPData
 
-    type: DPType
+    dynamic_probing_type: DPType
 
     predrilling_depth: Decimal = Field(Decimal("0"), alias="HO")
 
@@ -68,7 +68,7 @@ class MethodDP(Method):
     def set_operation(cls, data: Any) -> Any:
         if isinstance(data, dict):
             if "HM" in data and data["HM"] is not None:
-                data["type"] = {
+                data["dynamic_probing_type"] = {
                     "8": DPType.DPSHA,
                     "108A": DPType.DPSHA,
                     "108B": DPType.DPL,

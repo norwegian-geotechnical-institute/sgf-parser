@@ -13,23 +13,31 @@ exclude = '''
 )/
 '''
 
-[tool.poetry]
+[project]
 name = "sgf-parser"
 version = "0.0.5"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
-license = "MIT"
-authors = ["Jostein Leira <jostein@leira.net>"]
-maintainers = ["Jostein Leira <jostein@leira.net>"]
+license = { text = "MIT License" }
+authors = [
+ { name = "Jostein Leira", email = "jostein@leira.net" }
+]
+maintainers = [
+     { name = "Jostein Leira", email = "jostein@leira.net" }
+]
 readme = "README.md"
 homepage = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
 repository = "https://github.com/norwegian-geotechnical-institute/sgf-parser"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-#    "Development Status :: 4 - Beta",
-#    "Development Status :: 3 - Alpha",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: GIS",
+]
+requires-python = ">=3.11,<4"
+dependencies=[
+    "pydantic>=2.10",
+    "python-dateutil>=2.9.0.post0",
+    "types-python-dateutil>=2.9"
 ]
 packages = [
     { include = "sgf_parser", from="src" },
@@ -56,11 +64,6 @@ check_untyped_defs = true
 no_implicit_reexport = false
 
 
-[tool.poetry.dependencies]
-python = ">=3.11,<4"
-pydantic = "^2.10"
-python-dateutil = "^2.9.0.post0"
-types-python-dateutil = "^2.9"
 
 
 [tool.poetry.group.dev.dependencies]
