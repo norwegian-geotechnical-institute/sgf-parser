@@ -51,25 +51,25 @@ len(method.method_data)
 1. Software dependencies
 
    - Python 3.11 or higher
-   - Poetry 2
+   - uv
    - ruff code formatter
 
 2. Clone this repository
 
 3. Install
 
-   `poetry install`
+   `uv sync`
 
 
 # Build and Test
 
 Run in the project root folder: 
 
-    poetry shell pytest 
+    uv run pytest 
 
 Build the package wheel: 
 
-    poetry build
+    uv build
 
 # Publish
 
