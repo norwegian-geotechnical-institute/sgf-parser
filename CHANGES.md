@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2025-03-13_
+
+Version 0.0.6
+
+- Converting from Poetry to uv. No functional changes.
+
 _2025-03-10_
 
 Version 0.0.5
