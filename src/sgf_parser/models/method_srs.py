@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal, Any
 
-from pydantic import computed_field, Field, model_validator
+from pydantic import computed_field, Field, model_validator, AliasChoices
 
 from sgf_parser.models import MethodType, Method, MethodData
 from sgf_parser.models.types import SoundingClass, StopCode, CommentCode
@@ -28,7 +28,9 @@ class MethodSRSData(MethodData):
     penetration_force: Decimal | None = Field(None, alias="A", description="Penetration force (kN)")
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
     engine_pressure: Decimal | None = Field(None, alias="P", description="Engine pressure (MPa)")
-    hammering_pressure: Decimal | None = Field(None, alias="AZ", description="Hammering pressure (MPa)")
+    hammering_pressure: Decimal | None = Field(
+        None, validation_alias=AliasChoices("AZ", "SP"), description="Hammering pressure (MPa)"
+    )
     rotation_rate: Decimal | None = Field(None, alias="R", description="Rotation rate (rpm)")
     flushing_pressure: Decimal | None = Field(None, alias="I", description="Flushing pressure (MPa)")
     flushing_flow: Decimal | None = Field(None, alias="J", description="Flushing flow (l/min)")

@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field, computed_field
+from pydantic import Field, computed_field, AliasChoices
 
 from sgf_parser.models import MethodType, Method, MethodData, StopCode
 from sgf_parser.models.types import CommentCode
@@ -24,8 +24,9 @@ class MethodTOTData(MethodData):
     hammering: bool | None = Field(None, alias="AP")
 
     # "AZ": "hammering_pressure",
-    hammering_pressure: Decimal | None = Field(None, alias="AZ", description="Hammering pressure (MPa)")
-
+    hammering_pressure: Decimal | None = Field(
+        None, validation_alias=AliasChoices("AZ", "SP"), description="Hammering pressure (MPa)"
+    )
     # "AQ": "increased_rotation_rate",
     increased_rotation_rate: bool | None = Field(None, alias="AQ")
 

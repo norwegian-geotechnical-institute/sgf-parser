@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+_2025-04-11_
+
+Version 0.0.7
+
+- Add `SP` as an alias for hammering pressure. 
+  Affects method Total sounding (TOT) and Soil Rock Sounding (SRS).
+
 _2025-03-13_
 
 Version 0.0.6
