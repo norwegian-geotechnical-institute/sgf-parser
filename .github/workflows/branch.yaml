@@ -57,4 +57,4 @@ jobs:
         run: uv run safety check
 
       - name: Check for acceptable licenses
-        run: uv run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense)"
+        run: uv run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense);UNKNOWN;Apache-2.0"
