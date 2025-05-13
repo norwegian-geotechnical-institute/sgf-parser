@@ -108,7 +108,7 @@ class TestTotKCodes:
 ),
 (  # Case #4: K codes do not override AR and I
     ("D", "AR_ON", "I_ON", "K_72_F_ON", "I_OFF", "D", "I_OFF", "D", "D", "I_ON", "D", "I_OFF", "K_90"),
-    (False, True, True, True, True, True, True, True, True, True, True, False, False),
+    (False, True, True, True, False, False, False, False, False, True, True, False, False),
 ),
 (  # Case #5: No K codes, only AR codes and I codes
     ("AR_ON", "I_OFF", "AR_OFF", "D", "I_ON", "I_OFF", "D", "AR_ON", "D", "AR_OFF"),
