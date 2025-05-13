@@ -166,10 +166,10 @@ class Method(BaseModel):
 
         The following priority should be used to figure out if flushing is active:
 
-        1. Check K (kode) regulating flushing in file, use only K codes
-        2. If no K codes present in file, then check if "AR" code is present and has
+        1. Check K (kode) regulating flushing in file
+        2. If no K code present, then check if "AR" code is present and has
            a value (0 or 0.0 = off, 1 or 1.0 = on)
-        3. If no "AR" code is present in the file, then check if "I" (flushing pressure) > 0.1
+        3. If no "AR" code is present, then check if "I" (flushing pressure) > 0.1
         4. Otherwise, return False
 
         Codes used:
