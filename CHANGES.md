@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2025-05-13_
+
+Version 0.0.8
+
+- Reverted the parsing strategy to go line by line, such that K-codes do not overrule the other data.
+
 _2025-04-11_
 
 Version 0.0.7
