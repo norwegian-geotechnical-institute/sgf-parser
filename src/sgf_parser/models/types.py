@@ -81,35 +81,6 @@ class ParseState(enum.Enum):
     QUIT = 3
 
 
-class FlushingVariant(enum.StrEnum):
-    """
-    Flushing variants
-    """
-
-    CODE_K = "K"
-    CODE_AR = "AR"
-    CODE_I = "I"
-
-
-class HammeringVariant(enum.StrEnum):
-    """
-    Hammering variants
-    """
-
-    K = "K"
-    AP = "AP"
-
-
-class RotationVariant(enum.StrEnum):
-    """
-    Rotation variants
-    """
-
-    K = "K"
-    AQ = "AQ"
-    R = "R"
-
-
 class SoundingClass(enum.StrEnum):
     """
     Soil-Rock-Sounding (Swedish Jord-bergsondering) classes

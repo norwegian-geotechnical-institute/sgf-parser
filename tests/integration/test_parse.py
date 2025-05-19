@@ -510,9 +510,9 @@ class TestParse:
         datetime(2018, 11, 20, 10, 50,21),
         {
             # load=A, hammering=AP, load=W, turning=H, rotation_rate=R
-            Decimal("3.625"): {"load":Decimal("1.020"),  "turning":Decimal("152"), "penetration_rate": Decimal("154.208"), "comment_code": None, "remarks": None, "hammering": None},
-            Decimal("3.700"): {"load": Decimal("1.020"), "turning": Decimal("24"), "penetration_rate": Decimal("10.287"), "hammering": None,},
-            Decimal("3.775"): {"load": Decimal("5.681"), "turning": Decimal("24"), "penetration_rate": Decimal("1.506"), "hammering": None, "comment_code": 91, "remarks": "Sond kan ej drivas normalt"},
+            Decimal("3.625"): {"load":Decimal("1.020"),  "turning":Decimal("152"), "penetration_rate": Decimal("154.208"), "comment_code": None, "remarks": None, "hammering": False},
+            Decimal("3.700"): {"load": Decimal("1.020"), "turning": Decimal("24"), "penetration_rate": Decimal("10.287"), "hammering": False,},
+            Decimal("3.775"): {"load": Decimal("5.681"), "turning": Decimal("24"), "penetration_rate": Decimal("1.506"), "hammering": False, "comment_code": 91, "remarks": "Sond kan ej drivas normalt"},
         },
 ),
          ),

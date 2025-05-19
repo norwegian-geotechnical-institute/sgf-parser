@@ -53,25 +53,25 @@ class TestTotKCodes:
     ("D", "K_72_F_ON", "D", "K_73_F_OFF", "D", "K_74_H_ON", "K_75_H_OFF", "D", "K_76_H_F_ON", "D", "K_77_H_F_OFF", "D", "K_72_F_ON", "D", "K_77_H_F_OFF", "K_90",),
     (False, False,   False,    False,   False,    True,       False,     False,   True,      True,    False,     False,   False,   False,      False,     False),
 ),
-(  # Case #4: K codes (overrides AP)
+(  # Case #4: K codes do not override AP
     ("D", "AP_ON", "I_ON", "K_74_H_ON", "I_OFF", "D", "I_OFF", "AP_OFF", "AP_ON", "I_ON", "D", "I_OFF", "K_90"),
-    (False, False, False,   True,       True,    True, True,   True,     True,     True, True,  True,    True),
+    (False, True, True,   True,       True,    True, True,   False,     True,     True, True, True,    True),
 ),
 (  # Case #5: No K codes, AP codes 
     ("AP_ON", "I_OFF", "AP_OFF", "D", "I_ON", "I_OFF", "D", "AP_ON", "D", "AP_OFF"),
     (True, True, False, False, False, False, False, True, True, False),
 ),
-(  # Case #6: Multiple K codes on the same row (overrides AP)
+(  # Case #6: Multiple K codes on the same row do not overrides AP
     ("AP_ON", "D", "AP_OFF", "D", "I_ON", "K_MULTI_H_F_ON", "D", "K_MULTI_H_F_ON", "D", "AP_OFF", "K_MULTI_H_F_OFF", "K_MULTI_H_F_ON_REVERSE", "D", "K_MULTI_H_F_OFF_REVERSE", "K_90"),
-    (False,  False, False, False, False,      True,         True,   True,          True, True,     False,             True,                   True,     False,                  False),
+    (True,  True, False, False, False,      True,         True,   True,          True, False,     False,             True,                   True,     False,                  False),
 ),
         ],
     )
     # fmt: on
     def test_hammering(self, rows, expected_hammering):
         """
-        K - If K codes regulating flushing, then only look at K codes.
-        AP - If no K codes present (regulating hammering), then look at the AP code.
+        K - If K code regulating hammering, then look at K code.
+        AP - If no K code present (regulating hammering), then look at the AP code.
 
         """
         # Header
@@ -106,25 +106,25 @@ class TestTotKCodes:
     ("D", "K_72_F_ON", "D", "K_73_F_OFF", "D","K_74_H_ON", "K_75_H_OFF", "D", "K_76_H_F_ON", "D", "K_77_H_F_OFF", "D", "K_72_F_ON", "D", "K_77_H_F_OFF", "K_90",),
     (False, True,   True, False,    False,    False,           False,        False,  True,    True,   False,   False,  True,    True, False,  False),
 ),
-(  # Case #4: K codes (overrides AR and I)
+(  # Case #4: K codes do not override AR and I
     ("D", "AR_ON", "I_ON", "K_72_F_ON", "I_OFF", "D", "I_OFF", "D", "D", "I_ON", "D", "I_OFF", "K_90"),
-    (False, False, False, True, True, True, True, True, True, True, True, True, True),
+    (False, True, True, True, False, False, False, False, False, True, True, False, False),
 ),
-(  # Case #5: No K codes, AR codes (overrides I)
+(  # Case #5: No K codes, only AR codes and I codes
     ("AR_ON", "I_OFF", "AR_OFF", "D", "I_ON", "I_OFF", "D", "AR_ON", "D", "AR_OFF"),
-    (True,       True,   False, False, False, False, False, True,   True, False),
+    (True,       False,   False, False, True, False, False, True,   True, False),
 ),
-(  # Case #6: Multiple K codes on the same row (overrides AR and I)
+(  # Case #6: Multiple K codes on the same row do not overrides AR and I
     ("AR_ON", "I_ON", "AR_OFF", "D", "I_ON", "K_MULTI_H_F_ON", "D", "K_MULTI_H_F_ON", "D", "AR_OFF", "K_MULTI_H_F_OFF", "K_MULTI_H_F_ON_REVERSE", "D", "K_MULTI_H_F_OFF_REVERSE", "K_90"),
-    (False,    False,   False, False, False, True,        True,  True,        True, True,    False,          True,                True, False,                 False),
+    (True,    True,   False, False, True   , True,            True,  True,           True, False,    False,               True,                  True,   False,                 False),
 ),
         ],
     )
     # fmt: on
     def test_flushing(self, rows, expected_flushing):
         """
-        K - If K codes regulating flushing, then only look at K codes.
-        AR - If no K codes present (regulating flushing), then look at AR code.
+        K - If K code regulating flushing, then look at K code.
+        AR - If no K code present (regulating flushing), then look at AR code.
         I - If no K or AR code present (regulating flushing), then look at the I code. If I > 0.1 MPa then flushing is on.
 
         """
@@ -160,25 +160,25 @@ class TestTotKCodes:
     ("D", "K_70_R_ON", "D", "K_71_R_OFF", "D", "K_74_H_ON", "K_75_H_OFF", "D", "K_76_H_F_ON", "D", "K_70_R_ON", "D", "K_72_F_ON", "D", "K_70_R_ON", "K_90",),
     (False, True,     True,    False,   False,   False,         False,  False,     False,    False,    True,   True,      True,  True,  True,        True),
 ),
-(  # Case #4: K codes (overrides AQ and R)
+(  # Case #4: K codes do not override AQ and R
     ("D", "AQ_ON", "R_ON", "K_70_R_ON", "R_OFF", "D", "R_OFF", "I_OFF", "D", "R_ON", "D", "R_OFF", "K_71_R_OFF", "K_90"),
-    (False, False, False,    True,       True,  True,  True,   True,   True,  True,  True, True,    False,        False),
+    (False, True, True,    True,       False,  False,  False,   False,   False,  True,  True, False,    False,        False),
 ),
-(  # Case #5: No K codes, AQ codes (overrides R)
+(  # Case #5: No K codes, AQ codes do not override R
     ("AQ_ON", "R_OFF", "AQ_OFF", "D", "R_ON", "R_OFF", "D", "AQ_ON", "D", "AQ_OFF"),
-    (True, True, False, False, False, False, False, True, True, False),
+    (True, False, False, False, True, False, False, True, True, False),
 ),
-(  # Case #6: Multiple K codes on the same row (overrides AQ and R)
+(  # Case #6: Multiple K codes on the same row, do not override AQ and R
     ("AQ_ON", "R_ON", "AQ_OFF", "D", "R_ON", "K_MULTI_H_F_R_ON_REVERSE", "D", "K_MULTI_H_F_R_ON_REVERSE", "D", "AQ_OFF", "K_MULTI_H_F_R_OFF_REVERSE", "K_MULTI_H_F_R_ON", "D", "K_MULTI_H_F_R_OFF", "K_90"),
-    (False,    False,  False, False,  False, True,                      True, True,                      True,     True,  False,                       True,             True, False,                False),
+    (True,    True,  False, False,  True, True,                      True, True,                      True,     False,  False,                       True,             True, False,                False),
 ),
         ],
     )
     # fmt: on
     def test_rotation(self, rows, expected_rotation):
         """
-        K - If K codes regulating increased rotation, then only look at K codes.
-        AQ - If no K codes present (regulating increased rotation), then look at the AQ code.
+        K - If K code regulating increased rotation, then look at K code.
+        AQ - If no K code present (regulating increased rotation), then look at the AQ code.
         R - If no K or AQ code present (regulating increased rotation), then look at the R code.
             If R > 35 rpm then increased rotation is on.
         """

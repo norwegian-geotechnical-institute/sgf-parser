@@ -142,4 +142,10 @@ class Parser:
     def parse_data(self, method: Method, row: str) -> MethodData:
         row_dict = self._convert_str_to_dict(row)
         method_data = method.method_data_type.model_validate(row_dict)
+        if hasattr(method_data, "flushing"):
+                method_data.flushing = method.is_flushing_active(method_data)
+        if hasattr(method_data, "hammering"):
+            method_data.hammering = method.is_hammer_active(method_data)
+        if hasattr(method_data, "increased_rotation_rate"):
+            method_data.increased_rotation_rate = method.is_increased_rotation_active(method_data)
         return method_data

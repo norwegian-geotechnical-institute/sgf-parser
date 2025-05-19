@@ -93,20 +93,6 @@ class MethodSRS(Method):
 
         return data
 
-    def post_processing(self):
-        """
-        Post-processing
-
-        """
-
-        if not self.method_data:
-            return
-
-        # Update flushing, hammering and increased rotation
-        self.flushing_update()
-        self.hammering_update()
-        self.rotation_update()
-
     @computed_field
     def depth_in_rock(self) -> Decimal | None:
         _rock_top_depth = None

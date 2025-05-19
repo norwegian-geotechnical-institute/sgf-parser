@@ -39,16 +39,3 @@ class MethodRP(Method):
     method_data_type: type[MethodRPData] = MethodRPData
 
     method_data: list[MethodRPData] = []
-
-    def post_processing(self):
-        """
-        Post-processing
-
-        """
-
-        if not self.method_data:
-            return
-
-        # Update flushing and increased rotation
-        self.flushing_update()
-        self.rotation_update()

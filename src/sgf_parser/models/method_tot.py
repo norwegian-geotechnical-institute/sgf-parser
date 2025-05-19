@@ -159,17 +159,3 @@ class MethodTOT(Method):
             return Decimal(self.point_z) - _depth_in_soil
 
         return None
-
-    def post_processing(self):
-        """
-        Post-processing
-
-        """
-
-        if not self.method_data:
-            return
-
-        # Update flushing, hammering and increased rotation
-        self.flushing_update()
-        self.hammering_update()
-        self.rotation_update()
