@@ -1,3 +1,4 @@
+import copy
 import re
 from typing import TextIO, Any
 
@@ -82,6 +83,13 @@ class Parser:
                     # Starting a new data block, so store the current collected header in a new method
                     method = self.parse_header(header)
                     header = {}
+                elif _new_state == ParseState.DATA and _old_state == ParseState.DATA:
+                    # Starting a new data block, while handling data. No new header,
+                    # so use the previous method to create a new method of the same type
+                    if method:
+                        methods.append(method)
+                    method = copy.copy(method)
+                    method.method_data = []
                 elif _new_state in (ParseState.HEADER, ParseState.METHOD) and _old_state == ParseState.DATA:
                     # Finished populating current method, since new method is starting
                     # Store the current method, and empty the current method
@@ -143,7 +151,7 @@ class Parser:
         row_dict = self._convert_str_to_dict(row)
         method_data = method.method_data_type.model_validate(row_dict)
         if hasattr(method_data, "flushing"):
-                method_data.flushing = method.is_flushing_active(method_data)
+            method_data.flushing = method.is_flushing_active(method_data)
         if hasattr(method_data, "hammering"):
             method_data.hammering = method.is_hammer_active(method_data)
         if hasattr(method_data, "increased_rotation_rate"):

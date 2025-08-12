@@ -478,17 +478,27 @@ class TestParse:
 
     # fmt: off
     @pytest.mark.parametrize(
-        "file_name",
-        ("tests/data/cpt-dt-test-1.std",) 
+        "file_name, number_of_methods, number_of_rows",
+        (
+            ("tests/data/cpt-dt-test-1.std", 2, (5, 681)),
+            ("tests/data/dt-test-1.std", 1, (681,)),
+            ("tests/data/dt-test-2.dpt", 2, (499, 489)),
+            ("tests/data/dt-test-3.dpt", 2, (553, 490)),
+            ("tests/data/dt-test-4.dpt", 2, (496, 500)),
+        ),
     )
     # fmt: on
     def test_return_one_method_one_placeholder(
-            self, file_name
+        self, file_name, number_of_methods: int, number_of_rows: tuple[int, ...]
     ):
         with open(file_name, "r", encoding="windows-1252") as file:
             methods = Parser().parse(file)
-        
-        assert len(methods) == 2
+
+        assert len(methods) == number_of_methods
+
+        for i, method in enumerate(methods):
+            assert method.method_type in (models.MethodType.DT, models.MethodType.CPT)
+            assert len(method.method_data) == number_of_rows[i]
 
     # fmt: off
     @pytest.mark.parametrize(

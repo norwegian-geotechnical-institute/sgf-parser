@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+_2025-08-12_
+
+Version 0.0.9
+
+- Better support for importing Dissipation Tests (DT). Still need the code `HM=35`, and we do not handle dissipation
+  tests with `HM=7`.
+
 _2025-05-13_
 
 Version 0.0.8
