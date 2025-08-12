@@ -54,7 +54,9 @@ jobs:
         run: uv run bandit .
 
       - name: Run safety
-        run: uv run safety check
+        run: uv run safety --disable-optional-telemetry --stage cicd scan
+        env:
+          SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
 
       - name: Check for acceptable licenses
         run: uv run pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense);UNKNOWN;Apache-2.0"
