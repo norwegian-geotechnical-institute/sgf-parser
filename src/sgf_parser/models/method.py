@@ -339,7 +339,11 @@ class Method(BaseModel):
     # "HN": "cone_reference",
     cone_reference: str | None = Field(None, alias="HN")
 
-    # # "HG": "groundwater_level",
+    # "HG": "groundwater_level",
+    water_level: Decimal | None = Field(
+        None, alias="HG", description="Water surface level, meter below ground surface (m)"
+    )
+
     # "HP": "water_depth",
 
     # "HT": "remarks",

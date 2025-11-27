@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, AliasChoices
 
 from sgf_parser.models import MethodType, MethodData, Method
 
@@ -16,6 +16,7 @@ class MethodSLBData(MethodData):
 
     depth: Decimal | None = Field(None, alias="D", description="Depth (m)")
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
+    load: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
 
 
 class MethodSLB(Method):

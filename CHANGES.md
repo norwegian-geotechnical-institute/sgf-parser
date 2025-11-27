@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2025-11-27_
+
+Version 0.0.10
+
+- Add data model for the Impact sounding / Slagsondering (Slb) method  
+
 _2025-08-12_
 
 Version 0.0.9
