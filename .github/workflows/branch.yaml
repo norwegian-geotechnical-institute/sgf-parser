@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.11', '3.12', '3.13']
+        python-version: ['3.11', '3.12', '3.13', '3.14']
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.11', '3.12', '3.13']
+        python-version: ['3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v4
 
@@ -59,4 +59,4 @@ jobs:
           SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
 
       - name: Check for acceptable licenses
-        run: uv run pip-licenses --allow-only="MIT;MIT License;BSD License;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense);UNKNOWN;Apache-2.0;Apache-2.0 or BSD-3-Clause"
+        run: uv run pip-licenses --allow-only="Apache-2.0 AND CNRI-Python;MIT;MIT License;BSD License;BSD-3-Clause;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense);UNKNOWN;Apache-2.0;Apache-2.0 or BSD-3-Clause;PSF-2.0;Unlicense"
