@@ -509,20 +509,20 @@ class TestParse:
     "tests/data/wst-test-1.vim", 65, Decimal("0.025"), Decimal("1.625"),
     datetime(2022, 11, 1, 11, 7,5),
     {
-        # penetration rate=B, hammering=AP, penetration_force=W, turning=H, rotation_rate=R
+        # penetration rate=B, hammering=AP, load=W, turning=H, rotation_rate=R
         Decimal("0.025"): {"comment_code": None, "remarks": None, "penetration_rate": Decimal("0.3"), "hammering": False, "rotation_rate":Decimal("0")},
-        Decimal("0.350"): {"penetration_rate": Decimal("2.2"), "hammering": False, "rotation_rate": Decimal("0"), "penetration_force": Decimal("-0.796"), "turning": Decimal("0")},
-        Decimal("0.375"): {"penetration_rate": Decimal("0.2"), "hammering": False, "rotation_rate": Decimal("0"), "penetration_force": Decimal("1.02"), "turning": Decimal("1112")},
+        Decimal("0.350"): {"penetration_rate": Decimal("2.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("-0.796"), "turning": Decimal("0")},
+        Decimal("0.375"): {"penetration_rate": Decimal("0.2"), "hammering": False, "rotation_rate": Decimal("0"), "load": Decimal("1.02"), "turning": Decimal("1112")},
     },
 ),
 (
         "tests/data/wst-test-2.vim", 7, Decimal("3.625"), Decimal("3.775"),
         datetime(2018, 11, 20, 10, 50,21),
         {
-            # penetration_force=A, hammering=AP, penetration_force=W, turning=H, rotation_rate=R
-            Decimal("3.625"): {"penetration_force":Decimal("1.020"),  "turning":Decimal("152"), "penetration_rate": Decimal("154.208"), "comment_code": None, "remarks": None, "hammering": False},
-            Decimal("3.700"): {"penetration_force": Decimal("1.020"), "turning": Decimal("24"), "penetration_rate": Decimal("10.287"), "hammering": False,},
-            Decimal("3.775"): {"penetration_force": Decimal("5.681"), "turning": Decimal("24"), "penetration_rate": Decimal("1.506"), "hammering": False, "comment_code": 91, "remarks": "Sond kan ej drivas normalt"},
+            # load=A, hammering=AP, load=W, turning=H, rotation_rate=R
+            Decimal("3.625"): {"load":Decimal("1.020"),  "turning":Decimal("152"), "penetration_rate": Decimal("154.208"), "comment_code": None, "remarks": None, "hammering": False},
+            Decimal("3.700"): {"load": Decimal("1.020"), "turning": Decimal("24"), "penetration_rate": Decimal("10.287"), "hammering": False,},
+            Decimal("3.775"): {"load": Decimal("5.681"), "turning": Decimal("24"), "penetration_rate": Decimal("1.506"), "hammering": False, "comment_code": 91, "remarks": "Sond kan ej drivas normalt"},
         },
 ),
          ),

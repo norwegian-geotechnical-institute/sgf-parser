@@ -16,7 +16,7 @@ class MethodSLBData(MethodData):
 
     depth: Decimal | None = Field(None, alias="D", description="Depth (m)")
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
-    penetration_force: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
+    load: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
 
 
 class MethodSLB(Method):
