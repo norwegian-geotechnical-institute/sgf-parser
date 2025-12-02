@@ -17,7 +17,7 @@ class MethodWSTData(MethodData):
 
     depth: Decimal = Field(..., alias="D", description="Depth (m)")
     turning: Decimal = Field(..., alias="H", description="Turning (half revolution/0.2 m)")
-    load: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
+    penetration_force: Decimal | None = Field(None, description="Load (kN)", validation_alias=AliasChoices("W", "A"))
     penetration_rate: Decimal | None = Field(None, alias="B", description="Penetration rate (mm/s)")
 
     hammering: bool | None = Field(None, alias="AP")
