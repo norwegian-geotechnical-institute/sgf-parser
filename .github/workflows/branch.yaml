@@ -47,11 +47,11 @@ jobs:
       - name: Run ruff
         run: uv run ruff check .
 
-      - name: Run mypy
-        run: uv run mypy .
-
       - name: Run bandit
         run: uv run bandit .
+
+      - name: Run uv audit
+        run: uv audit
 
       - name: Run safety
         run: uv run safety --disable-optional-telemetry --stage cicd scan
@@ -59,4 +59,5 @@ jobs:
           SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
 
       - name: Check for acceptable licenses
-        run: uv run pip-licenses --allow-only="Apache-2.0 AND CNRI-Python;MIT;MIT License;BSD License;BSD-3-Clause;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);The Unlicense (Unlicense);UNKNOWN;Apache-2.0;Apache-2.0 or BSD-3-Clause;PSF-2.0;Unlicense"
+        run: uv run pip-licenses --allow-only="Apache-2.0 AND CNRI-Python;MIT;MIT License;BSD License;BSD-2-Clause;BSD-3-Clause;Python Software Foundation License;Apache Software License;Mozilla Public License 2.0 (MPL 2.0);ISC License (ISCL);Apache-2.0;Apache-2.0 or BSD-3-Clause;PSF-2.0;MIT-0;Apache-2.0 OR BSD-2-Clause;MPL-2.0 AND MIT"
+

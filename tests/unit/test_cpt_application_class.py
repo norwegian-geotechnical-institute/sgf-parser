@@ -27,9 +27,7 @@ def build_test_string(
     q = NA * 100.0 / NA_percent + 0.001  # MPa
     f = NB * 100.0 / NB_percent + 0.001  # kPa
     u = NC * 100.0 / NC_percent + 0.001  # kPa
-    test_string += (
-        f"D={delta_depth:0.2f},B=0.9,A=0.0,U={u},Q={q},F={f},O=6.2,NA={NA*2:0.3f},NB={NB*2:0.3f},NC={NC*2:0.3f}\r\n"
-    )
+    test_string += f"D={delta_depth:0.2f},B=0.9,A=0.0,U={u},Q={q},F={f},O=6.2,NA={NA * 2:0.3f},NB={NB * 2:0.3f},NC={NC * 2:0.3f}\r\n"
     test_string += f"D={2 * delta_depth:0.2f},B=0.9,A=0.0,U={u},Q={q},F={f},O=6.2\r\n"
     test_string += f"D={3 * delta_depth:0.2f},B=0.9,A=0.0,U={u},Q={q},F={f},O=6.2\r\n"
     test_string += (

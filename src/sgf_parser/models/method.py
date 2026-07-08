@@ -10,6 +10,35 @@ from sgf_parser.datetime_parser import convert_str_to_datetime, convert_str_to_t
 from sgf_parser.models import MethodType
 
 
+_MINUS_SIGN_TRANSLATION = str.maketrans(
+    {
+        "\u2212": "-",
+        "\u2010": "-",
+        "\u2011": "-",
+        "\u2012": "-",
+        "\u2013": "-",
+        "\ufe63": "-",
+        "\uff0d": "-",
+    }
+)
+
+
+def _normalize_minus_signs(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.translate(_MINUS_SIGN_TRANSLATION)
+
+    if isinstance(value, dict):
+        return {key: _normalize_minus_signs(item) for key, item in value.items()}
+
+    if isinstance(value, list):
+        return [_normalize_minus_signs(item) for item in value]
+
+    if isinstance(value, tuple):
+        return tuple(_normalize_minus_signs(item) for item in value)
+
+    return value
+
+
 class MethodData(BaseModel, abc.ABC):
     @classmethod
     def _fix_malformed_data(cls, code: str) -> str | None:
@@ -27,9 +56,11 @@ class MethodData(BaseModel, abc.ABC):
             codes = data["K"].split(", ")
             sorted_codes = sorted(
                 codes,
-                key=lambda code: "0"
-                if code in ("40", "41", "42", "43")
-                else (" " if code in ("90", "91", "92", "93", "94", "95", "96", "97", "98", "99") else code),
+                key=lambda code: (
+                    "0"
+                    if code in ("40", "41", "42", "43")
+                    else (" " if code in ("90", "91", "92", "93", "94", "95", "96", "97", "98", "99") else code)
+                ),
                 reverse=False,
             )
             code = sorted_codes[0]
@@ -127,6 +158,11 @@ class MethodData(BaseModel, abc.ABC):
                     data["S"] = None
 
         return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_unicode_minus_signs(cls, data: Any) -> Any:
+        return _normalize_minus_signs(data)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.depth}>"
@@ -286,6 +322,11 @@ class Method(BaseModel):
                 data["HD"] = datetime.combine(data["HD"], data["HI"])
 
         return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_unicode_minus_signs(cls, data: Any) -> Any:
+        return _normalize_minus_signs(data)
 
     @computed_field
     def depth_top(self) -> Decimal | None:

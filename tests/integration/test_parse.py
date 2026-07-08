@@ -461,17 +461,17 @@ class TestParse:
                     assert getattr(row, key) == pytest.approx(
                         data_rows[row.depth][key]), f"{key} {getattr(row, key)} != {data_rows[row.depth][key]}"
 
-    # fmt: off
+
     @pytest.mark.parametrize(
         "file_name",
         ("tests/data/dt-test-1.std",
-        ) 
+         "tests/data/cpt-dt-unicode-minus-1.std",
+         "tests/data/cpt-dt-unicode-minus-1.std")
     )
-    # fmt: on
     def test_placeholder_dissipation_test(
             self, file_name
     ):
-        with open(file_name, "r", encoding="windows-1252") as file:
+        with open(file_name, "r", encoding="utf-8") as file:
             methods = Parser().parse(file)
         
         assert methods

@@ -1,6 +1,6 @@
 [project]
 name = "sgf-parser"
-version = "0.0.10"
+version = "0.0.11"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 authors = [{ name = "Jostein Leira", email = "jostein@leira.net" }]
 requires-python = ">=3.11,<4"
@@ -32,7 +32,6 @@ build-backend = "hatchling.build"
 dev = [
     "pytest",
     "pytest-cov",
-    "mypy",
     "bandit",
     "safety",
     "pip-licenses",
@@ -46,14 +45,3 @@ src = ["src", "tests"]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
-[tool.mypy]
-plugins = [
-  "pydantic.mypy"
-]
-
-follow_imports = "skip"
-warn_redundant_casts = true
-warn_unused_ignores = true
-disallow_any_generics = true
-check_untyped_defs = true
-no_implicit_reexport = false

@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+_2026-07-08_
+
+Version 0.0.11
+
+- Now accept Unicode minus characters in the data.
+
 _2025-11-27_
 
 Version 0.0.10
