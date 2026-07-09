@@ -2,10 +2,18 @@
 
 _2026-07-08_
 
-Version 0.0.11
+Version 0.0.12
 
 - Now accept Unicode minus characters in the data.
 
+_2025-12-02_
+
+Version 0.0.11 Yanked
+
+- ~~Change the attribute name `load` to `penetration_force` for the Weight Sounding Test (WST) 
+  and the Swedish Impact sounding / Slagsondering (Slb) method data.~~
+
+  
 _2025-11-27_
 
 Version 0.0.10
