@@ -26,5 +26,5 @@ jobs:
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
-          uv build
+          uv build --no-config
           uv publish --token $PYPI_TOKEN

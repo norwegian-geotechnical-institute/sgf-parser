@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+_2026-07-14_
+
+Version 0.0.13 (unreleased)
+
+- Set 7 days delay on installing new packages.
+
+
 _2026-07-08_
 
 Version 0.0.12

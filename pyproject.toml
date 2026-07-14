@@ -1,6 +1,6 @@
 [project]
 name = "sgf-parser"
-version = "0.0.12"
+version = "0.0.13"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 authors = [{ name = "Jostein Leira", email = "jostein@leira.net" }]
 requires-python = ">=3.11,<4"
@@ -37,6 +37,11 @@ dev = [
     "pip-licenses",
     "ruff",
 ]
+
+[tool.uv]
+exclude-newer = "P7D"
+no-build = true
+no-binary-package=["sgf-parser"]
 
 [tool.ruff]
 line-length = 120

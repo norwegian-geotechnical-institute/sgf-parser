@@ -53,7 +53,7 @@ jobs:
         run: uv run bandit .
 
       - name: Run uv audit
-        run: uv audit
+        run: uv audit --locked --color never
 
       - name: Run safety
         run: uv run safety --disable-optional-telemetry --stage cicd scan
