@@ -463,18 +463,23 @@ class TestParse:
 
 
     @pytest.mark.parametrize(
-        "file_name",
-        ("tests/data/dt-test-1.std",
-         "tests/data/cpt-dt-unicode-minus-1.std",
-         "tests/data/cpt-dt-unicode-minus-1.std")
+        "file_name, depth",
+        (("tests/data/dt-test-1.std",Decimal("2.57")),
+         ("tests/data/cpt-dt-unicode-minus-1.std",Decimal("3.301")),
+         ("tests/data/cpt-dt-unicode-minus-2.std",Decimal("9.28")),
+         )
     )
     def test_placeholder_dissipation_test(
-            self, file_name
+            self, file_name, depth
     ):
         with open(file_name, "r", encoding="utf-8") as file:
             methods = Parser().parse(file)
         
         assert methods
+
+        for method in methods:
+            if isinstance(method, models.MethodDT):
+                assert method.depth == depth
 
     # fmt: off
     @pytest.mark.parametrize(

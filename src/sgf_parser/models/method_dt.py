@@ -35,5 +35,6 @@ class MethodDT(Method):
     name: str = "DT"
     method_type: Literal[MethodType.DT] = MethodType.DT
     method_data_type: type[MethodDTData] = MethodDTData
+    depth: Decimal | None = Field(None, alias="IC", description="Depth (m)")
 
     method_data: list[MethodDTData] = []
