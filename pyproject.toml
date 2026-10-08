@@ -33,7 +33,6 @@ dev = [
     "pytest",
     "pytest-cov",
     "bandit",
-    "safety",
     "pip-licenses",
     "ruff",
 ]
@@ -43,18 +42,9 @@ exclude-newer = "P7D"
 no-build = true
 no-binary-package = ["sgf-parser"]
 
-[tool.uv.audit]
-ignore = [
-    "GHSA-p4gq-832x-fm9v", # Safety uses nltk:
-    # Natural Language Toolkit (NLTK):
-    # URL-Encoded Path Traversal in nltk.data.load() Allows Arbitrary Local File Read
-    "PYSEC-2026-597", # Yet another security volnerability in nltk 3.9.4
-]
-
 [tool.ruff]
 line-length = 120
 src = ["src", "tests"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-
