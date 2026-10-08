@@ -1,6 +1,6 @@
 [project]
 name = "sgf-parser"
-version = "0.0.13"
+version = "0.0.14"
 description = "Parser for the Swedish Geotechnical Society / Svenska Geotekniska Föreningen (SGF) data format"
 authors = [{ name = "Jostein Leira", email = "jostein@leira.net" }]
 requires-python = ">=3.11,<4"
@@ -45,10 +45,9 @@ no-binary-package = ["sgf-parser"]
 
 [tool.uv.audit]
 ignore = [
-    "GHSA-p4gq-832x-fm9v", # Safety uses nltk:
+    "GHSA-8mgp-746c-j5xp", # Safety uses nltk:
     # Natural Language Toolkit (NLTK):
     # URL-Encoded Path Traversal in nltk.data.load() Allows Arbitrary Local File Read
-    "PYSEC-2026-597", # Yet another security volnerability in nltk 3.9.4
 ]
 
 [tool.ruff]

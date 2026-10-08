@@ -205,7 +205,7 @@ class Method(BaseModel):
         1. Check K (kode) regulating flushing in file
         2. If no K code present, then check if "AR" code is present and has
            a value (0 or 0.0 = off, 1 or 1.0 = on)
-        3. If no "AR" code is present, then check if "I" (flushing pressure) > 0.1
+        3. If no "AR" code is present, then check if "I" (flushing pressure) > 0.25
         4. Otherwise, return False
 
         Codes used:
@@ -227,7 +227,7 @@ class Method(BaseModel):
             return self._current_flushing_active_state
 
         if data_row.flushing_pressure is not None:
-            if data_row.flushing_pressure > Decimal("0.1"):
+            if data_row.flushing_pressure > Decimal("0.25"):
                 self._current_flushing_active_state = True
             else:
                 self._current_flushing_active_state = False
