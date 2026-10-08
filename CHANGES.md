@@ -1,5 +1,11 @@
 # NGI Python SGF Parser Package
 
+Version 0.0.14
+
+_2026-10-08_
+
+- Change flushing limit from 0.1 to 0.25.
+
 Version 0.0.13
 
 _2026-07-14_
