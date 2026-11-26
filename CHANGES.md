@@ -1,5 +1,12 @@
 # NGI Python SGF Parser Package
 
+Version 0.0.15
+
+_2026-11-26_
+
+- Keep flushing, hammering and increased rotation enabled by K codes until they are turned OFF by k codes.
+- Interpret increased rotation codes in remarks as well as the primary comment code.
+
 Version 0.0.14
 
 _2026-10-08_

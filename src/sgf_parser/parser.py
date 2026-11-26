@@ -56,6 +56,7 @@ class Parser:
 
         The file parameter must be an opened file in text mode (with correct character encoding), pointing at the start
         of the file to parse. The file pointer may not point at the end of the file when this method returns.
+        Active states are reset when parsing finishes.
         """
 
         blocks = {
@@ -116,6 +117,9 @@ class Parser:
         if method:
             method.post_processing()
             methods.append(method)
+
+        for parsed_method in methods:
+            parsed_method.reset_active_states()
 
         return methods
 

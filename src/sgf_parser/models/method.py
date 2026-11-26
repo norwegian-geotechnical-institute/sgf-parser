@@ -173,12 +173,24 @@ class Method(BaseModel):
     _current_flushing_active_state: bool = False
     _current_hammer_active_state: bool = False
     _current_increased_rotation_state: bool = False
+    _flushing_enabled_by_code: bool = False
+    _hammer_enabled_by_code: bool = False
+    _rotation_enabled_by_code: bool = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def post_processing(self):
         pass
+
+    def reset_active_states(self) -> None:
+        """Clear runtime states without changing the parsed data rows."""
+        self._current_flushing_active_state = False
+        self._current_hammer_active_state = False
+        self._current_increased_rotation_state = False
+        self._flushing_enabled_by_code = False
+        self._hammer_enabled_by_code = False
+        self._rotation_enabled_by_code = False
 
     @classmethod
     def extract_codes(cls, remarks: str | None) -> tuple[int, ...]:
@@ -203,10 +215,11 @@ class Method(BaseModel):
         The following priority should be used to figure out if flushing is active:
 
         1. Check K (kode) regulating flushing in file
+           An ON from K (kode) overrides 2. and 3. until an OFF from K (kode).
         2. If no K code present, then check if "AR" code is present and has
            a value (0 or 0.0 = off, 1 or 1.0 = on)
         3. If no "AR" code is present, then check if "I" (flushing pressure) > 0.25
-        4. Otherwise, return False
+        4. Otherwise, return False.
 
         Codes used:
         Kode 72 (flushing on)
@@ -214,12 +227,17 @@ class Method(BaseModel):
         Kode 76 (hammer and flushing on)
         Kode 77 (hammer and flushing off)
         """
-        if data_row.comment_code in (72, 76) or any(x in (72, 76) for x in self.extract_codes(data_row.remarks)):
-            self._current_flushing_active_state = True
-            return self._current_flushing_active_state
-        # TODO: check remark for extra codes
-        elif data_row.comment_code in (73, 77) or any(x in (73, 77) for x in self.extract_codes(data_row.remarks)):
+        comment_codes = self.extract_codes(data_row.remarks) + (data_row.comment_code,)
+        if any(comment_code in (73, 77) for comment_code in comment_codes):
+            self._flushing_enabled_by_code = False
             self._current_flushing_active_state = False
+            return self._current_flushing_active_state
+
+        if any(comment_code in (72, 76) for comment_code in comment_codes):
+            self._flushing_enabled_by_code = True
+
+        if self._flushing_enabled_by_code:
+            self._current_flushing_active_state = True
             return self._current_flushing_active_state
 
         if data_row.flushing is not None:
@@ -246,8 +264,9 @@ class Method(BaseModel):
         The following priority should be used to figure out if the hammer is active:
 
         1. Check K (kode)
-        2. Check "AP" value (0 or 0.0 = off, 1 or 1.0 = on)
-        3. Otherwise, return False
+           An ON from K (kode) overrides 2. and 3. until an OFF from K (kode).
+        2. Check "AP" value (0 or 0.0 = off, 1 or 1.0 = on).
+        3. Otherwise return False.
 
         Codes used:
         Kode 74 (hammer on)
@@ -255,11 +274,17 @@ class Method(BaseModel):
         Kode 76 (hammer and flushing on)
         Kode 77 (hammer and flushing off)
         """
-        if data_row.comment_code in (74, 76) or any(x in (74, 76) for x in self.extract_codes(data_row.remarks)):
-            self._current_hammer_active_state = True
-            return self._current_hammer_active_state
-        elif data_row.comment_code in (75, 77) or any(x in (75, 77) for x in self.extract_codes(data_row.remarks)):
+        comment_codes = self.extract_codes(data_row.remarks) + (data_row.comment_code,)
+        if any(comment_code in (75, 77) for comment_code in comment_codes):
+            self._hammer_enabled_by_code = False
             self._current_hammer_active_state = False
+            return self._current_hammer_active_state
+
+        if any(comment_code in (74, 76) for comment_code in comment_codes):
+            self._hammer_enabled_by_code = True
+
+        if self._hammer_enabled_by_code:
+            self._current_hammer_active_state = True
             return self._current_hammer_active_state
 
         if data_row.hammering is not None:
@@ -278,20 +303,28 @@ class Method(BaseModel):
         The following priority should be used to figure out if increased rotation speed is active:
 
         1. Check K (kode)
-        2. Check "AQ" value (0 or 0.0 = off, 1 or 1.0 = on)
+           An ON from K (kode) overrides 2. and 3. until an OFF from K (kode).
+        2. Check "AQ" value (0 or 0.0 = off, 1 or 1.0 = on).
         3. If rotation (R) > 35 rpm set increased rotation
-        4. Otherwise, return False
+        4. Otherwise, return False.
 
         Codes used:
         Kode 70 (increased rotation speed on)
         Kode 71 (increased rotation speed off)
         """
-        if data_row.comment_code == 70:
-            self._current_increased_rotation_state = True
-            return self._current_increased_rotation_state
-        elif data_row.comment_code == 71:
+        comment_codes = self.extract_codes(data_row.remarks) + (data_row.comment_code,)
+        if 71 in comment_codes:
+            self._rotation_enabled_by_code = False
             self._current_increased_rotation_state = False
             return self._current_increased_rotation_state
+
+        if 70 in comment_codes:
+            self._rotation_enabled_by_code = True
+
+        if self._rotation_enabled_by_code:
+            self._current_increased_rotation_state = True
+            return self._current_increased_rotation_state
+
         if data_row.increased_rotation_rate is not None:
             self._current_increased_rotation_state = data_row.increased_rotation_rate
             return self._current_increased_rotation_state
